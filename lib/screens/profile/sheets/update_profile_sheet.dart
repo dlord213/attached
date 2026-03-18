@@ -20,7 +20,6 @@ class _UpdateProfileSheetState extends ConsumerState<UpdateProfileSheet> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill the current name asynchronously since we can't watch in initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = ref.read(authProvider);
       if (user != null && user.name != null) {
@@ -60,7 +59,7 @@ class _UpdateProfileSheetState extends ConsumerState<UpdateProfileSheet> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Failed to update profile: $e')));
+        ).showSnackBar(SnackBar(content: Text('FAILED TO UPDATE PROFILE: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -71,8 +70,10 @@ class _UpdateProfileSheetState extends ConsumerState<UpdateProfileSheet> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        color: Color(0xFFFFC0CB),
+        border: Border(
+          top: BorderSide(color: Colors.black, width: 6),
+        ),
       ),
       padding: EdgeInsets.only(
         left: 24,
@@ -82,132 +83,151 @@ class _UpdateProfileSheetState extends ConsumerState<UpdateProfileSheet> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Edit Profile',
-            style: GoogleFonts.gabarito(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFFD6006A),
-              letterSpacing: -0.5,
+          Center(
+            child: Text(
+              'EDIT PROFILE',
+              style: GoogleFonts.vt323(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFFFF1493),
+                letterSpacing: 2,
+                shadows: const [
+                  Shadow(color: Colors.black, offset: Offset(2, 2))
+                ]
+              ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Center(
             child: GestureDetector(
               onTap: _pickAvatar,
               child: Stack(
                 alignment: Alignment.bottomRight,
+                clipBehavior: Clip.none,
                 children: [
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: 120,
+                    height: 120,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFFFD6E7),
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 4,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, offset: Offset(6, 6))
+                      ],
                       image: _selectedAvatarPath != null
                           ? DecorationImage(
                               image: FileImage(File(_selectedAvatarPath!)),
                               fit: BoxFit.cover,
                             )
                           : null,
-                      border: Border.all(
-                        color: const Color(0xFFFF6B9D),
-                        width: 2,
-                      ),
                     ),
                     child: _selectedAvatarPath == null
                         ? const Center(
                             child: Icon(
-                              Icons.person_rounded,
-                              size: 48,
-                              color: Color(0xFFD6006A),
+                              Icons.person,
+                              size: 64,
+                              color: Colors.black,
                             ),
                           )
                         : null,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFD6006A),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt_rounded,
-                      size: 20,
-                      color: Colors.white,
+                  Positioned(
+                    bottom: -8,
+                    right: -8,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF1493),
+                        border: Border.all(color: Colors.black, width: 3),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black, offset: Offset(3, 3))
+                        ]
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 28,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 48),
           Text(
-            'Name',
-            style: GoogleFonts.nunito(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFF8B4263),
+            'NAME',
+            style: GoogleFonts.vt323(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: _nameController,
+            style: GoogleFonts.vt323(fontSize: 24, color: Colors.black),
             decoration: InputDecoration(
-              hintText: 'Your name',
+              hintText: 'YOUR NAME',
+              hintStyle: GoogleFonts.vt323(fontSize: 24, color: Colors.black38),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
-                vertical: 18,
+                vertical: 20,
               ),
               filled: true,
-              fillColor: const Color(0xFFFFF0F5).withOpacity(0.5),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFFFFD6E7)),
+              fillColor: Colors.white,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: Colors.black, width: 4),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFFFFD6E7)),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: Colors.black, width: 4),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  color: Color(0xFFFF6B9D),
-                  width: 2,
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 4,
                 ),
               ),
             ),
           ),
           const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 54,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _saveProfile,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B9D),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
+          GestureDetector(
+            onTap: _isLoading ? null : _saveProfile,
+            child: Container(
+              width: double.infinity,
+              height: 60,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFF1493),
+                border: Border.all(color: Colors.black, width: 4),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(4, 4))
+                ]
               ),
+              alignment: Alignment.center,
               child: _isLoading
                   ? const SizedBox(
-                      width: 24,
-                      height: 24,
+                      width: 28,
+                      height: 28,
                       child: CircularProgressIndicator(
                         color: Colors.white,
-                        strokeWidth: 2.5,
+                        strokeWidth: 4,
                       ),
                     )
                   : Text(
-                      'Save Changes',
-                      style: GoogleFonts.nunito(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
+                      'SAVE CHANGES',
+                      style: GoogleFonts.vt323(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        letterSpacing: 2,
                       ),
                     ),
             ),
