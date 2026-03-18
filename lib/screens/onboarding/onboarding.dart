@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+// Note: hugeicons no longer strictly needed for retro UI but keeping import if needed, although we use standard icons now.
 import 'package:hugeicons/hugeicons.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
@@ -49,23 +49,17 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           .connectPartner(_partnerUsernameController.text);
       if (mounted) {
         if (result == 200) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Invite sent 💌')));
+          _showPixelSnackbar('INVITE SENT! <3');
           context.pushReplacement("/");
         }
         if (result == 302) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Invite already sent 💕')));
+          _showPixelSnackbar('INVITE ALREADY SENT!');
           context.pushReplacement("/");
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        _showPixelSnackbar('ERROR: ${e.toString()}');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -74,8 +68,24 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   void _copyToClipboard() {
     Clipboard.setData(ClipboardData(text: _myUniqueId));
+    _showPixelSnackbar('ID COPIED! SHARE THE LOVE!');
+  }
+
+  void _showPixelSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('ID copied! Share it with your partner 💋')),
+      SnackBar(
+        content: Text(
+          message,
+          style: GoogleFonts.vt323(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.black,
+        behavior: SnackBarBehavior.floating,
+        shape: Border.all(color: Colors.white, width: 2),
+      ),
     );
   }
 
@@ -85,26 +95,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     _myUniqueId = authState?.id ?? "";
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB), // Pink background
       body: Stack(
         children: [
-          Positioned(
-            top: -60,
-            right: -60,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.18),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Pixel Background Pattern (Simple grid effect)
+          Positioned.fill(child: CustomPaint(painter: _PixelGridPainter())),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,34 +107,30 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 // Top bar
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
+                    horizontal: 16.0,
+                    vertical: 8.0,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
+                      PixelIconButton(
                         onPressed: () => context.pop(),
-                        icon: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowLeft01,
-                          color: Color(0xFFD6006A),
-                          size: 24,
-                        ),
+                        icon: Icons.arrow_back,
+                        color: Colors.white,
                       ),
-                      const Spacer(),
-                      // Pending invites shortcut
-                      TextButton.icon(
+                      PixelButton(
                         onPressed: () => context.push("/invitation"),
-                        icon: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedSent02,
-                          color: Color(0xFFFF6B9D),
-                          size: 20,
+                        color: const Color(0xFFFF69B4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
                         ),
-                        label: Text(
-                          'Pending',
-                          style: GoogleFonts.nunito(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFFF6B9D),
+                        child: Text(
+                          'PENDING',
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -149,324 +140,182 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 20),
 
-                        // Hero graphic — two overlapping hearts
-                        _HeartGraphic(),
-
-                        const SizedBox(height: 28),
-
-                        // OneUI-style big heading
-                        Text(
-                          'Better\ntogether 💑',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.gabarito(
-                            fontSize: 38,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFD6006A),
-                            height: 1.15,
-                            letterSpacing: -1,
-                          ),
+                        // Animated Pixel Heart
+                        TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0.8, end: 1.0),
+                          duration: Duration(milliseconds: 800),
+                          curve: Curves.elasticOut,
+                          builder: (context, scale, child) {
+                            return Transform.scale(scale: scale, child: child);
+                          },
+                          child: _PixelHeartGraphic(),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 30),
 
-                        Text(
-                          'Enter your partner\'s unique ID to start sharing your journey, memories, and more.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF8B4263),
-                            height: 1.6,
+                        // Arcade style heading
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ),
-
-                        const SizedBox(height: 36),
-
-                        // Input label
-                        Align(
-                          alignment: Alignment.centerLeft,
+                          decoration: _pixelDecoration(Colors.white),
                           child: Text(
-                            "Partner's ID or Username",
-                            style: GoogleFonts.nunito(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF8B4263),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _partnerUsernameController,
-                          style: GoogleFonts.nunito(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF3D0020),
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'e.g. LOVE-123-456',
-                            hintStyle: GoogleFonts.nunito(
-                              fontSize: 15,
-                              color: const Color(0xFFCB8BA4),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.favorite_outline_rounded,
-                              color: Color(0xFFFF6B9D),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFFFD6E7),
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFFF6B9D),
-                                width: 2,
-                              ),
+                            'PLAYER 2\nREADY?',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.vt323(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFFF1493),
+                              height: 1.0,
                             ),
                           ),
                         ),
 
                         const SizedBox(height: 20),
 
-                        // Send invite button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: BorderRadius.circular(100),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(
-                                    0xFFFF4081,
-                                  ).withOpacity(0.4),
-                                  blurRadius: 18,
-                                  spreadRadius: -4,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
+                        Text(
+                          'ENTER PARTNER ID TO START CO-OP MODE!',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.vt323(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // Input Box
+                        Container(
+                          decoration: _pixelDecoration(Colors.white),
+                          child: TextField(
+                            controller: _partnerUsernameController,
+                            style: GoogleFonts.vt323(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
-                            child: ElevatedButton.icon(
-                              onPressed: _isLoading ? null : _connectPartner,
-                              icon: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.5,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const HugeIcon(
-                                      icon: HugeIcons.strokeRoundedSent,
+                            decoration: InputDecoration(
+                              hintText: 'e.g. LOVE-123',
+                              hintStyle: GoogleFonts.vt323(
+                                fontSize: 24,
+                                color: Colors.black38,
+                              ),
+                              contentPadding: const EdgeInsets.all(16),
+                              prefixIcon: const Icon(
+                                Icons.favorite,
+                                color: Color(0xFFFF1493),
+                              ),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Action Button
+                        PixelButton(
+                          onPressed: _isLoading ? () {} : _connectPartner,
+                          color: const Color(0xFFFF1493), // Deep pink
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.send,
                                       color: Colors.white,
                                       size: 20,
                                     ),
-                              label: Text(
-                                _isLoading ? 'Sending...' : 'Send Invite 💌',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'SEND INVITE',
+                                      style: GoogleFonts.vt323(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
 
                         const SizedBox(height: 40),
 
-                        // OR divider
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      const Color(0xFFFFB3CF),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                              ),
-                              child: Text(
-                                'OR',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFFCB8BA4),
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      const Color(0xFFFFB3CF),
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 28),
-
-                        // Your Unique ID card — OneUI card style
+                        // Unique ID Display
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
-                            border: Border.all(
-                              color: const Color(0xFFFFD6E7),
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFFFF6B9D,
-                                ).withOpacity(0.08),
-                                blurRadius: 20,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.all(20),
+                          decoration: _pixelDecoration(const Color(0xFFFFF0F5)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Container(
-                                    width: 36,
-                                    height: 36,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFFFFD6E7),
-                                    ),
-                                    child: const Icon(
-                                      Icons.badge_outlined,
-                                      size: 20,
-                                      color: Color(0xFFD6006A),
-                                    ),
+                                  const Icon(
+                                    Icons.videogame_asset,
+                                    color: Colors.black,
+                                    size: 28,
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    'Your Unique ID',
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: const Color(0xFFD6006A),
+                                    'YOUR PLAYER ID',
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 16),
-
-                              Container(
-                                padding: const EdgeInsets.only(
-                                  left: 18,
-                                  right: 6,
-                                  top: 4,
-                                  bottom: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFF0F5),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: const Color(0xFFFFD6E7),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 2,
+                                        ),
+                                      ),
                                       child: Text(
-                                        _myUniqueId,
-                                        style: GoogleFonts.sourceCodePro(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                        _myUniqueId.isEmpty
+                                            ? 'LOADING...'
+                                            : _myUniqueId,
+                                        style: GoogleFonts.vt323(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFFFF1493),
                                           letterSpacing: 1.5,
-                                          color: const Color(0xFF3D0020),
                                         ),
                                       ),
                                     ),
-                                    Tooltip(
-                                      message: "Copy ID",
-                                      child: IconButton(
-                                        onPressed: _copyToClipboard,
-                                        icon: Container(
-                                          padding: const EdgeInsets.all(7),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFFFF6B9D),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.copy_rounded,
-                                            size: 14,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              const SizedBox(height: 12),
-
-                              Text(
-                                'Share this ID with your partner so they can connect with you! 💕',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 12,
-                                  color: const Color(0xFF8B4263),
-                                  height: 1.5,
-                                ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  PixelIconButton(
+                                    onPressed: _copyToClipboard,
+                                    icon: Icons.copy,
+                                    color: const Color(0xFFFF69B4),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -484,117 +333,168 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       ),
     );
   }
+
+  BoxDecoration _pixelDecoration(Color color) {
+    return BoxDecoration(
+      color: color,
+      border: Border.all(color: Colors.black, width: 4),
+      boxShadow: const [
+        BoxShadow(color: Colors.black, offset: Offset(4, 4), blurRadius: 0),
+      ],
+    );
+  }
 }
 
-/// Two overlapping heart circles illustration
-class _HeartGraphic extends StatelessWidget {
+// Background Grid Painter
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Custom Pixel Heart
+class _PixelHeartGraphic extends StatelessWidget {
+  const _PixelHeartGraphic();
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Background soft blush card
-          Container(
-            width: double.infinity,
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFE4EF), Color(0xFFFFD6EA)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Left circle
-              Container(
-                width: 78,
-                height: 78,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFFF85A1), Color(0xFFFF4081)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFFF4081).withOpacity(0.35),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.favorite_rounded,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
-              // Plus connector
-              Transform.translate(
-                offset: const Offset(-14, 0),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(
-                      color: const Color(0xFFFF6B9D),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.pink.withOpacity(0.1),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.add_rounded,
-                    color: Color(0xFFFF6B9D),
-                    size: 24,
-                  ),
-                ),
-              ),
-              // Right circle
-              Transform.translate(
-                offset: const Offset(-28, 0),
-                child: Container(
-                  width: 78,
-                  height: 78,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFFB3CF), Color(0xFFFF85A1)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFF85A1).withOpacity(0.35),
-                        blurRadius: 20,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.favorite_rounded,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    final List<String> heartPattern = [
+      "0110110",
+      "1111111",
+      "1111111",
+      "0111110",
+      "0011100",
+      "0001000",
+    ];
+
+    const double pixelSize = 20.0;
+    const double borderPixelSize = 24.0;
+
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(color: Colors.black, offset: Offset(8, 8), blurRadius: 0),
         ],
       ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: heartPattern.map((row) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: row.split('').map((char) {
+              return Container(
+                width: pixelSize,
+                height: pixelSize,
+                decoration: BoxDecoration(
+                  color: char == '1'
+                      ? const Color(0xFFFF1493)
+                      : Colors.transparent,
+                  border: char == '1'
+                      ? Border.all(color: Colors.black, width: 2)
+                      : null,
+                ),
+              );
+            }).toList(),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+// Interactive Pixel Button
+class PixelButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+  final Color color;
+  final EdgeInsetsGeometry padding;
+
+  const PixelButton({
+    super.key,
+    required this.onPressed,
+    required this.child,
+    this.color = Colors.pinkAccent,
+    this.padding = const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+  });
+
+  @override
+  State<PixelButton> createState() => _PixelButtonState();
+}
+
+class _PixelButtonState extends State<PixelButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 50),
+        margin: EdgeInsets.only(
+          top: _isPressed ? 4.0 : 0.0,
+          left: _isPressed ? 4.0 : 0.0,
+          bottom: _isPressed ? 0.0 : 4.0,
+          right: _isPressed ? 0.0 : 4.0,
+        ),
+        decoration: BoxDecoration(
+          color: widget.color,
+          border: Border.all(color: Colors.black, width: 4),
+          boxShadow: _isPressed
+              ? []
+              : const [
+                  BoxShadow(
+                    color: Colors.black,
+                    offset: Offset(4, 4),
+                    blurRadius: 0,
+                  ),
+                ],
+        ),
+        padding: widget.padding,
+        child: Center(child: widget.child),
+      ),
+    );
+  }
+}
+
+// Simple Pixel Icon Button
+class PixelIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color color;
+
+  const PixelIconButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PixelButton(
+      onPressed: onPressed,
+      color: color,
+      padding: const EdgeInsets.all(12),
+      child: Icon(icon, color: Colors.black, size: 28),
     );
   }
 }

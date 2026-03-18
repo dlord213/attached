@@ -11,7 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../gallery/gallery_tab.dart';
-import 'tasks_tab.dart';
+import '../tasks/tasks_tab.dart';
 import '../profile/profile_tab.dart';
 import '../features/shared_location.dart';
 import '../features/shared_curated_list.dart';
@@ -29,22 +29,22 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   String get _greeting {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return 'GOOD MORNING';
+    if (hour < 17) return 'GOOD AFTERNOON';
+    return 'GOOD EVENING';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       body: IndexedStack(
         index: _currentIndex,
         children: [
           _HomeBody(greeting: _greeting),
           const GalleryTab(),
           const TasksTab(),
-          const SharedCuratedListScreen(),
+          // const SharedCuratedListScreen(),
           const ProfileTab(),
         ],
       ),
@@ -87,21 +87,10 @@ class _HomeBody extends ConsumerWidget {
 
     return Stack(
       children: [
-        Positioned(
-          top: -80,
-          right: -60,
-          child: Container(
-            width: 280,
-            height: 280,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFFFF6B9D).withOpacity(0.18),
-                  Colors.transparent,
-                ],
-              ),
-            ),
+        // Pixel grid background
+        Positioned.fill(
+          child: CustomPaint(
+            painter: _PixelGridPainter(),
           ),
         ),
 
@@ -121,22 +110,23 @@ class _HomeBody extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '$greeting',
-                          style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF8B4263),
+                          '$greeting,',
+                          style: GoogleFonts.vt323(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            letterSpacing: 1,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
-                          authRef?.name ?? "",
-                          style: GoogleFonts.gabarito(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFD6006A),
-                            letterSpacing: -0.5,
-                            height: 1.1,
+                          (authRef?.name ?? "PLAYER 1").toUpperCase(),
+                          style: GoogleFonts.vt323(
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFF1493),
+                            letterSpacing: 2,
+                            height: 1.0,
                           ),
                         ),
                       ],
@@ -146,32 +136,27 @@ class _HomeBody extends ConsumerWidget {
 
                 const SizedBox(height: 28),
 
-                // ── Partner Status Card ─────────────────────────────
+                // ── Partner Status Card (Pixelated) ──────────────────
                 GestureDetector(
                   onTap: () => _showUpdateStatusSheet(context),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
+                      color: const Color(0xFFFF1493),
+                      border: Border.all(color: Colors.black, width: 4),
+                      boxShadow: const [
                         BoxShadow(
-                          color: const Color(0xFFFF4081).withOpacity(0.35),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                          spreadRadius: -4,
+                          color: Colors.black,
+                          offset: Offset(6, 6),
+                          blurRadius: 0,
                         ),
                       ],
                     ),
                     child: Builder(
                       builder: (context) {
                         final partnerName =
-                            connectionNotifier.partnerData?.name ?? 'Partner';
+                            connectionNotifier.partnerData?.name ?? 'PARTNER';
                         final initial = partnerName.isNotEmpty
                             ? partnerName[0].toUpperCase()
                             : '?';
@@ -184,113 +169,112 @@ class _HomeBody extends ConsumerWidget {
                                   width: 58,
                                   height: 58,
                                   decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white.withOpacity(0.25),
+                                    color: Colors.white,
                                     border: Border.all(
-                                      color: Colors.white.withOpacity(0.5),
-                                      width: 2,
+                                      color: Colors.black,
+                                      width: 3,
                                     ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        offset: Offset(2, 2),
+                                      ),
+                                    ],
                                   ),
                                   child: Center(
                                     child: Text(
                                       initial,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
+                                      style: GoogleFonts.vt323(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFFFF1493),
                                       ),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 14),
+                                const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        partnerName,
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800,
+                                        partnerName.toUpperCase(),
+                                        style: GoogleFonts.vt323(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          letterSpacing: 1.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${partnerPresence?.emoji ?? "🏠"} ${partnerPresence?.status ?? "AT HOME · MISSING YOU"}'.toUpperCase(),
+                                        style: GoogleFonts.vt323(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
                                       ),
-                                      const SizedBox(height: 3),
-                                      Text(
-                                        '${partnerPresence?.emoji ?? "🏠"} ${partnerPresence?.status ?? "At home · Missing you 🥺"}',
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withOpacity(0.85),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: 10),
                                       Row(
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 8,
-                                              vertical: 3,
+                                              vertical: 4,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(
-                                                0.2,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              color: Colors.white,
+                                              border: Border.all(color: Colors.black, width: 2),
                                             ),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 const Icon(
-                                                  Icons.battery_alert_rounded,
-                                                  color: Colors.white,
-                                                  size: 12,
+                                                  Icons.battery_charging_full,
+                                                  color: Colors.black,
+                                                  size: 14,
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  '${partnerPresence?.battery is Map ? partnerPresence?.battery['level'] : partnerPresence?.battery ?? "0"}% (Buddy)',
-                                                  style: GoogleFonts.nunito(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white,
+                                                  '${partnerPresence?.battery is Map ? partnerPresence?.battery['level'] : partnerPresence?.battery ?? "0"}%',
+                                                  style: GoogleFonts.vt323(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          const SizedBox(width: 6),
+                                          const SizedBox(width: 8),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 8,
-                                              vertical: 3,
+                                              vertical: 4,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(
-                                                0.2,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                              color: Colors.white,
+                                              border: Border.all(color: Colors.black, width: 2),
                                             ),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 const Icon(
-                                                  Icons
-                                                      .do_not_disturb_on_rounded,
-                                                  color: Colors.white,
-                                                  size: 12,
+                                                  Icons.do_not_disturb_on,
+                                                  color: Colors.black,
+                                                  size: 14,
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
                                                   partnerPresence?.isDnd == true
-                                                      ? 'DND Active'
-                                                      : 'DND Off',
-                                                  style: GoogleFonts.nunito(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white,
+                                                      ? 'DND ON'
+                                                      : 'DND OFF',
+                                                  style: GoogleFonts.vt323(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
                                               ],
@@ -309,8 +293,24 @@ class _HomeBody extends ConsumerWidget {
                     ),
                   ),
                 ),
+                
+                // "Press to Update Status" hint
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'TAP CARD TO UPDATE ^',
+                      style: GoogleFonts.vt323(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ),
 
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
 
                 GestureDetector(
                   onTap: () {
@@ -325,137 +325,177 @@ class _HomeBody extends ConsumerWidget {
                     width: double.infinity,
                     height: 240,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black, width: 4),
+                      boxShadow: const [
                         BoxShadow(
-                          color: const Color(0xFFD6006A).withOpacity(0.08),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
+                          color: Colors.black,
+                          offset: Offset(6, 6),
+                          blurRadius: 0,
                         ),
                       ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Stack(
-                        children: [
-                          IgnorePointer(
-                            child: SizedBox.expand(
-                              child: FlutterMap(
-                                options: const MapOptions(
-                                  initialCenter: LatLng(51.509865, -0.118092),
-                                  initialZoom: 13.0,
-                                  interactionOptions: InteractionOptions(
-                                    flags: InteractiveFlag.none,
-                                  ),
-                                ),
-                                children: [
-                                  TileLayer(
-                                    urlTemplate:
-                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                    userAgentPackageName: 'com.attached.app',
-                                  ),
-                                  MarkerLayer(
-                                    markers: [
-                                      Marker(
-                                        point: const LatLng(
-                                          51.509865,
-                                          -0.118092,
-                                        ),
-                                        width: 30,
-                                        height: 30,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: const Color(0xFFFF6B9D),
-                                            border: Border.all(
-                                              color: Colors.white,
-                                              width: 2,
-                                            ),
-                                          ),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.favorite_rounded,
-                                              color: Colors.white,
-                                              size: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.5),
-                                  ],
+                    child: Stack(
+                      children: [
+                        IgnorePointer(
+                          child: SizedBox.expand(
+                            child: FlutterMap(
+                              options: const MapOptions(
+                                initialCenter: LatLng(51.509865, -0.118092),
+                                initialZoom: 13.0,
+                                interactionOptions: InteractionOptions(
+                                  flags: InteractiveFlag.none,
                                 ),
                               ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 16,
-                            bottom: 16,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Builder(
-                                  builder: (context) {
-                                    final partnerName =
-                                        connectionNotifier.partnerData?.name ??
-                                        'Partner\'s';
-                                    return Text(
-                                      "$partnerName Location",
-                                      style: GoogleFonts.gabarito(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    );
-                                  },
+                                TileLayer(
+                                  urlTemplate:
+                                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName: 'com.attached.app',
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Live sharing',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 14,
-                                    color: Colors.white.withOpacity(0.9),
-                                  ),
+                                MarkerLayer(
+                                  markers: [
+                                    Marker(
+                                      point: const LatLng(
+                                        51.509865,
+                                        -0.118092,
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFF1493),
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 3,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black,
+                                              offset: Offset(2, 2),
+                                            )
+                                          ]
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.favorite,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        Positioned.fill(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.6),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 16,
+                          bottom: 16,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Builder(
+                                builder: (context) {
+                                  final partnerName =
+                                      connectionNotifier.partnerData?.name ??
+                                      'PARTNER\'S';
+                                  return Text(
+                                    "${partnerName.toUpperCase()} LOCATION",
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 2,
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'LIVE SHARING ...',
+                                style: GoogleFonts.vt323(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 28),
+                const SizedBox(height: 36),
 
                 // ── Relationship chips ──────────────────────────────
                 Row(
                   children: [
-                    RelationshipChip(
-                      emoji: '🗓️',
-                      label:
-                          'Day ${daysTogether > 0 ? daysTogether : 1} together',
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(3, 3))
+                          ]
+                        ),
+                        child: Text(
+                          '🗓️ DAY ${daysTogether > 0 ? daysTogether : 1}',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 10),
-                    RelationshipChip(
-                      emoji: '✅',
-                      label: '$tasksCount tasks pending',
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(3, 3))
+                          ]
+                        ),
+                        child: Text(
+                          '✅ $tasksCount TASKS',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
+
+                const SizedBox(height: 24),
 
                 const MoodLogsList(),
 
@@ -467,4 +507,24 @@ class _HomeBody extends ConsumerWidget {
       ],
     );
   }
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

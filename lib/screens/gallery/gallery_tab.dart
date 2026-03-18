@@ -16,7 +16,7 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
   int _selectedCategory = 0;
   final LocalAuthentication _auth = LocalAuthentication();
 
-  final _categories = ['All', 'Dates', 'Travel', 'Home', 'Selfies'];
+  final _categories = ['ALL', 'DATES', 'TRAVEL', 'HOME', 'SELFIES'];
 
   void _showAddDialog() {
     final tagCtrl = TextEditingController();
@@ -33,66 +33,55 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFF5F9),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFB6C1),
+                border: Border.all(color: Colors.black, width: 4),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(0, -8)),
+                ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ── Drag handle ─────────────────────────────────
                   const SizedBox(height: 12),
-                  Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFB3D1),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
+                  Container(width: 40, height: 6, color: Colors.black),
                   const SizedBox(height: 24),
 
-                  // ── Gradient icon + title ────────────────────────
+                  // ── Icon + title ────────────────────────
                   Container(
                     width: 64,
                     height: 64,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFFF4081).withOpacity(0.35),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                        ),
+                      color: const Color(0xFFFF1493),
+                      border: Border.all(color: Colors.black, width: 4),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, offset: Offset(4, 4)),
                       ],
                     ),
                     child: const Icon(
                       Icons.add_photo_alternate_rounded,
                       color: Colors.white,
-                      size: 30,
+                      size: 32,
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
                   Text(
-                    'Add a Memory',
-                    style: GoogleFonts.gabarito(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFFD6006A),
-                      letterSpacing: -0.4,
+                    'ADD A MEMORY',
+                    style: GoogleFonts.vt323(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      letterSpacing: 2,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Tag it and make it yours',
-                    style: GoogleFonts.nunito(
-                      fontSize: 13,
-                      color: const Color(0xFFB06080),
+                    'TAG IT AND MAKE IT YOURS.',
+                    style: GoogleFonts.vt323(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -101,121 +90,120 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.stretch, // start to stretch
                       children: [
                         // Tag label
                         Text(
-                          'Memory Tag',
-                          style: GoogleFonts.nunito(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF8B4263),
+                          'MEMORY TAG:',
+                          style: GoogleFonts.vt323(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 8),
 
                         // Tag text field
-                        TextField(
-                          controller: tagCtrl,
-                          style: GoogleFonts.nunito(
-                            color: const Color(0xFF4A1030),
-                            fontWeight: FontWeight.w600,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black, width: 4),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(4, 4),
+                              ),
+                            ],
                           ),
-                          decoration: InputDecoration(
-                            hintText: 'e.g. Travel, Date Night…',
-                            hintStyle: GoogleFonts.nunito(
-                              color: const Color(0xFFCCA0B4),
+                          child: TextField(
+                            controller: tagCtrl,
+                            style: GoogleFonts.vt323(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
-                            prefixIcon: const Icon(
-                              Icons.label_rounded,
-                              color: Color(0xFFFF6B9D),
-                              size: 20,
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFFFD6E7),
-                                width: 1.5,
+                            decoration: InputDecoration(
+                              hintText: 'e.g. TRAVEL',
+                              hintStyle: GoogleFonts.vt323(
+                                color: Colors.black38,
+                                fontSize: 24,
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFFF4081),
-                                width: 1.8,
+                              prefixIcon: const Icon(
+                                Icons.label,
+                                color: Colors.black,
+                                size: 24,
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              border: InputBorder.none,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
                         // Encrypt toggle card
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeInOut,
+                        Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
-                            vertical: 14,
+                            vertical: 16,
                           ),
                           decoration: BoxDecoration(
                             color: isEncrypted
-                                ? const Color(0xFFFF4081).withOpacity(0.07)
+                                ? const Color(0xFFFF1493)
                                 : Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isEncrypted
-                                  ? const Color(0xFFFF4081).withOpacity(0.4)
-                                  : const Color(0xFFFFD6E7),
-                              width: 1.5,
-                            ),
+                            border: Border.all(color: Colors.black, width: 4),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(4, 4),
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
                               Container(
-                                width: 36,
-                                height: 36,
+                                width: 40,
+                                height: 40,
                                 decoration: BoxDecoration(
-                                  color: isEncrypted
-                                      ? const Color(
-                                          0xFFFF4081,
-                                        ).withOpacity(0.12)
-                                      : const Color(0xFFFFF0F5),
-                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
                                 ),
                                 child: Icon(
-                                  isEncrypted
-                                      ? Icons.lock_rounded
-                                      : Icons.lock_open_rounded,
-                                  color: isEncrypted
-                                      ? const Color(0xFFFF4081)
-                                      : const Color(0xFF8B4263),
-                                  size: 18,
+                                  isEncrypted ? Icons.lock : Icons.lock_open,
+                                  color: Colors.black,
+                                  size: 24,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 16),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Encrypt Memory',
-                                      style: GoogleFonts.nunito(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14,
-                                        color: const Color(0xFF4A1030),
+                                      'ENCRYPT MEMORY',
+                                      style: GoogleFonts.vt323(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24,
+                                        color: isEncrypted
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
                                     ),
                                     Text(
-                                      'Requires biometric unlock to view',
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 11.5,
-                                        color: const Color(0xFFB06080),
+                                      'REQUIRES BIOMETRIC UNLOCK',
+                                      style: GoogleFonts.vt323(
+                                        fontSize: 16,
+                                        color: isEncrypted
+                                            ? Colors.white
+                                            : Colors.black54,
                                       ),
                                     ),
                                   ],
@@ -223,16 +211,17 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                               ),
                               Switch(
                                 value: isEncrypted,
-                                activeColor: const Color(0xFFFF4081),
-                                inactiveThumbColor: const Color(0xFFCCA0B4),
-                                inactiveTrackColor: const Color(0xFFFFD6E7),
+                                activeColor: Colors.white,
+                                activeTrackColor: Colors.black,
+                                inactiveThumbColor: Colors.black,
+                                inactiveTrackColor: Colors.white,
                                 onChanged: (val) =>
                                     setStateSB(() => isEncrypted = val),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 32),
 
                         // Action buttons
                         Row(
@@ -242,27 +231,34 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                               child: GestureDetector(
                                 onTap: () => Navigator.pop(ctx),
                                 child: Container(
-                                  height: 52,
+                                  height: 56,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: const Color(0xFFFFD6E7),
-                                      width: 1.5,
+                                      color: Colors.black,
+                                      width: 4,
                                     ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black,
+                                        offset: Offset(4, 4),
+                                      ),
+                                    ],
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Cancel',
-                                    style: GoogleFonts.nunito(
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFF8B4263),
+                                    'CANCEL',
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      letterSpacing: 2,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 16),
                             // Pick Image
                             Expanded(
                               flex: 2,
@@ -277,24 +273,17 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                                   Navigator.pop(ctx);
                                 },
                                 child: Container(
-                                  height: 52,
+                                  height: 56,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFFFF6B9D),
-                                        Color(0xFFFF4081),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                                    color: const Color(0xFFFF1493),
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 4,
                                     ),
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
-                                        color: const Color(
-                                          0xFFFF4081,
-                                        ).withOpacity(0.35),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
+                                        color: Colors.black,
+                                        offset: Offset(4, 4),
                                       ),
                                     ],
                                   ),
@@ -303,17 +292,18 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Icon(
-                                        Icons.image_rounded,
+                                        Icons.image,
                                         color: Colors.white,
-                                        size: 18,
+                                        size: 24,
                                       ),
                                       const SizedBox(width: 8),
                                       Text(
-                                        'Pick Image',
-                                        style: GoogleFonts.nunito(
-                                          fontWeight: FontWeight.w800,
+                                        'PICK IMAGE',
+                                        style: GoogleFonts.vt323(
+                                          fontWeight: FontWeight.bold,
                                           color: Colors.white,
-                                          fontSize: 15,
+                                          fontSize: 28,
+                                          letterSpacing: 2,
                                         ),
                                       ),
                                     ],
@@ -341,26 +331,10 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
     final galleryState = ref.watch(galleryProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       body: Stack(
         children: [
-          Positioned(
-            top: -60,
-            right: -60,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.15),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _PixelGridPainter())),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,24 +349,43 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Our Gallery',
-                            style: GoogleFonts.gabarito(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFD6006A),
-                              letterSpacing: -0.5,
-                              height: 1.1,
+                            'OUR GALLERY',
+                            style: GoogleFonts.vt323(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFFF1493),
+                              letterSpacing: 2,
                             ),
                           ),
+                          const SizedBox(height: 8),
                           galleryState.when(
-                            data: (items) => Text(
-                              items.length == 0
-                                  ? "No memories yet."
-                                  : '${items.length} memories together',
-                              style: GoogleFonts.nunito(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF8B4263),
+                            data: (items) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 3,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(3, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                items.isEmpty
+                                    ? "NO MEMORIES YET."
+                                    : '${items.length} MEMORIES UNLOCKED',
+                                style: GoogleFonts.vt323(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                             loading: () => const SizedBox(),
@@ -404,50 +397,43 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 24),
 
                 // ── Category filter chips ─────────────────────────
                 SizedBox(
-                  height: 38,
+                  height: 48,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     itemCount: _categories.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
                     itemBuilder: (_, i) {
                       final selected = i == _selectedCategory;
                       return GestureDetector(
                         onTap: () => setState(() => _selectedCategory = i),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
                           decoration: BoxDecoration(
-                            gradient: selected
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFFF6B9D),
-                                      Color(0xFFFF4081),
-                                    ],
-                                  )
-                                : null,
-                            color: selected ? null : Colors.white,
-                            borderRadius: BorderRadius.circular(100),
-                            border: Border.all(
-                              color: selected
-                                  ? Colors.transparent
-                                  : const Color(0xFFFFD6E7),
-                              width: 1.5,
-                            ),
+                            color: selected
+                                ? const Color(0xFFFF1493)
+                                : Colors.white,
+                            border: Border.all(color: Colors.black, width: 3),
+                            boxShadow: selected
+                                ? null
+                                : const [
+                                    BoxShadow(
+                                      color: Colors.black,
+                                      offset: Offset(3, 3),
+                                    ),
+                                  ],
                           ),
                           child: Center(
                             child: Text(
                               _categories[i],
-                              style: GoogleFonts.nunito(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: selected
-                                    ? Colors.white
-                                    : const Color(0xFF8B4263),
+                              style: GoogleFonts.vt323(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: selected ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
@@ -457,7 +443,7 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
                 // ── Photo grid ────────────────────────────────────
                 Expanded(
@@ -465,14 +451,17 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                     data: (items) {
                       // Filter by category if needed
                       final categoryText = _categories[_selectedCategory];
-                      final filtered = categoryText == 'All'
+                      final filtered = categoryText == 'ALL'
                           ? items
                           : items
                                 .where(
                                   (it) =>
-                                      it.customTag == categoryText ||
+                                      it.customTag?.toUpperCase() ==
+                                          categoryText.toUpperCase() ||
                                       (it.customTag != null &&
-                                          categoryText.contains(it.customTag!)),
+                                          it.customTag!.toUpperCase().contains(
+                                            categoryText.toUpperCase(),
+                                          )),
                                 )
                                 .toList();
 
@@ -481,8 +470,8 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
                               childAspectRatio: 0.82,
                             ),
                         itemCount: filtered.length,
@@ -495,7 +484,7 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                                 final bool
                                 didAuthenticate = await _auth.authenticate(
                                   localizedReason:
-                                      'Please authenticate to view this memory',
+                                      'PLEASE AUTHENTICATE TO VIEW THIS MEMORY',
                                   biometricOnly: false,
                                 );
                                 if (didAuthenticate) {
@@ -510,15 +499,15 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                       );
                     },
                     loading: () => const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFFFF4081),
-                      ),
+                      child: CircularProgressIndicator(color: Colors.black),
                     ),
                     error: (e, st) => Center(
                       child: Text(
-                        'Error loading gallery: \$e',
-                        style: GoogleFonts.nunito(
-                          color: const Color(0xFFD6006A),
+                        'ERROR LOADING GALLERY',
+                        style: GoogleFonts.vt323(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
                         ),
                       ),
                     ),
@@ -532,34 +521,23 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
           Positioned(
             bottom: 24,
             right: 24,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            child: GestureDetector(
+              onTap: _showAddDialog,
+              child: Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF1493),
+                  border: Border.all(color: Colors.black, width: 4),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(4, 4)),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFFF4081).withOpacity(0.4),
-                    blurRadius: 18,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: _showAddDialog,
-                  child: const Padding(
-                    padding: EdgeInsets.all(14),
-                    child: Icon(
-                      Icons.add_photo_alternate_rounded,
-                      color: Colors.white,
-                      size: 26,
-                    ),
+                child: const Center(
+                  child: Icon(
+                    Icons.add_photo_alternate,
+                    color: Colors.white,
+                    size: 32,
                   ),
                 ),
               ),
@@ -569,4 +547,24 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
       ),
     );
   }
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

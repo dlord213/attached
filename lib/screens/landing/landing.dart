@@ -7,48 +7,12 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       body: Stack(
         children: [
-          // Soft blush background blobs
-          Positioned(
-            top: -80,
-            right: -60,
-            child: Container(
-              width: 280,
-              height: 280,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.25),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: size.height * 0.25,
-            left: -80,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF85A1).withOpacity(0.2),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-
+          // Pixel Background Pattern (Simple grid effect)
+          Positioned.fill(child: CustomPaint(painter: _PixelGridPainter())),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -60,77 +24,101 @@ class LandingPage extends StatelessWidget {
                 children: [
                   const Spacer(flex: 2),
 
-                  // App Logo / Heart Icon
+                  // App Logo / Animated Heart
                   Center(
-                    child: Container(
-                      width: 110,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.favorite_rounded,
-                        size: 56,
-                        color: Colors.white,
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.8, end: 1.0),
+                      duration: Duration(milliseconds: 1000),
+                      curve: Curves.elasticOut,
+                      builder: (context, scale, child) {
+                        return Transform.scale(scale: scale, child: child);
+                      },
+                      child: _PixelHeartLogo(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 48),
+
+                  // App name — Retro Arcade style
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: _pixelDecoration(Colors.white),
+                    child: Text(
+                      'ATTACHED',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.vt323(
+                        fontSize: 64,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFFFF1493),
+                        letterSpacing: 4,
+                        height: 1.0,
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 16),
 
-                  // App name — OneUI large bold title style
                   Text(
-                    'attached',
+                    'PRESS START TO CONNECT',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.gabarito(
-                      fontSize: 52,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFFD6006A),
-                      letterSpacing: -1.5,
-                      height: 1.0,
+                    style: GoogleFonts.vt323(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      letterSpacing: 2,
                     ),
                   ),
-
-                  const SizedBox(height: 14),
 
                   const Spacer(flex: 3),
 
-                  // Primary CTA — pink gradient pill button
-                  _PinkGradientButton(
+                  // Primary CTA — Pixel button
+                  PixelButton(
                     onPressed: () => context.push('/register'),
-                    label: 'Get Started',
-                    icon: Icons.favorite_border_rounded,
+                    color: const Color(0xFFFF1493),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.favorite,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'GET STARTED',
+                          style: GoogleFonts.vt323(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 20),
 
-                  // Secondary — ghost button
-                  SizedBox(
-                    height: 54,
-                    child: OutlinedButton(
-                      onPressed: () => context.push('/login'),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Color(0xFFFF6B9D),
-                          width: 1.5,
+                  // Secondary — Retro button
+                  PixelButton(
+                    onPressed: () => context.push('/login'),
+                    color: Colors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'LOG IN',
+                          style: GoogleFonts.vt323(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFF1493),
+                            letterSpacing: 2,
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                      ),
-                      child: Text(
-                        'Log In',
-                        style: GoogleFonts.nunito(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFFD6006A),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
 
@@ -143,52 +131,145 @@ class LandingPage extends StatelessWidget {
       ),
     );
   }
+
+  BoxDecoration _pixelDecoration(Color color) {
+    return BoxDecoration(
+      color: color,
+      border: Border.all(color: Colors.black, width: 4),
+      boxShadow: const [
+        BoxShadow(color: Colors.black, offset: Offset(4, 4), blurRadius: 0),
+      ],
+    );
+  }
 }
 
-class _PinkGradientButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String label;
-  final IconData icon;
+// Background Grid Painter
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
 
-  const _PinkGradientButton({
-    required this.onPressed,
-    required this.label,
-    required this.icon,
-  });
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Custom Pixel Heart Logo
+class _PixelHeartLogo extends StatelessWidget {
+  const _PixelHeartLogo();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: DecoratedBox(
+    final List<String> heartPattern = [
+      "01100110",
+      "11111111",
+      "11111111",
+      "01111110",
+      "00111100",
+      "00011000",
+    ];
+
+    const double pixelSize = 16.0;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black, width: 4),
+        boxShadow: const [
+          BoxShadow(color: Colors.black, offset: Offset(8, 8), blurRadius: 0),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: heartPattern.map((row) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: row.split('').map((char) {
+              return Container(
+                width: pixelSize,
+                height: pixelSize,
+                decoration: BoxDecoration(
+                  color: char == '1'
+                      ? const Color(0xFFFF1493)
+                      : Colors.transparent,
+                  border: char == '1'
+                      ? Border.all(color: Colors.black, width: 2)
+                      : null,
+                ),
+              );
+            }).toList(),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+// Interactive Pixel Button
+class PixelButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+  final Color color;
+  final EdgeInsetsGeometry padding;
+
+  const PixelButton({
+    super.key,
+    required this.onPressed,
+    required this.child,
+    this.color = Colors.pinkAccent,
+    this.padding = const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+  });
+
+  @override
+  State<PixelButton> createState() => _PixelButtonState();
+}
+
+class _PixelButtonState extends State<PixelButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 50),
+        margin: EdgeInsets.only(
+          top: _isPressed ? 4.0 : 0.0,
+          left: _isPressed ? 4.0 : 0.0,
+          bottom: _isPressed ? 0.0 : 4.0,
+          right: _isPressed ? 0.0 : 4.0,
+        ),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-          borderRadius: BorderRadius.circular(100),
+          color: widget.color,
+          border: Border.all(color: Colors.black, width: 4),
+          boxShadow: _isPressed
+              ? []
+              : const [
+                  BoxShadow(
+                    color: Colors.black,
+                    offset: Offset(4, 4),
+                    blurRadius: 0,
+                  ),
+                ],
         ),
-        child: ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 20, color: Colors.white),
-          label: Text(
-            label,
-            style: GoogleFonts.nunito(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-          ),
-        ),
+        padding: widget.padding,
+        child: Center(child: widget.child),
       ),
     );
   }

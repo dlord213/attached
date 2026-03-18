@@ -35,25 +35,13 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     final tasksCount = tasksAsync.value?.length ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       body: Stack(
         children: [
-          // Top blob
-          Positioned(
-            top: -80,
-            left: -60,
-            child: Container(
-              width: 280,
-              height: 280,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.15),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
+          // Pixel grid background
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PixelGridPainter(),
             ),
           ),
           SafeArea(
@@ -66,12 +54,12 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
                   // ── Page title ────────────────────────────────
                   Text(
-                    'Profile',
-                    style: GoogleFonts.gabarito(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFFD6006A),
-                      letterSpacing: -0.5,
+                    'PROFILE',
+                    style: GoogleFonts.vt323(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFFFF1493),
+                      letterSpacing: 2,
                     ),
                   ),
 
@@ -82,17 +70,12 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
+                      color: const Color(0xFFFF1493),
+                      border: Border.all(color: Colors.black, width: 4),
+                      boxShadow: const [
                         BoxShadow(
-                          color: const Color(0xFFFF4081).withOpacity(0.35),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
+                          color: Colors.black,
+                          offset: Offset(6, 6),
                         ),
                       ],
                     ),
@@ -103,30 +86,29 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                           width: 72,
                           height: 72,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.25),
+                            color: Colors.white,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.5),
-                              width: 2.5,
+                              color: Colors.black,
+                              width: 3,
                             ),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black, offset: Offset(2, 2)),
+                            ]
                           ),
                           child: Center(
                             child: user?.avatar?.isNotEmpty == true
-                                ? CircleAvatar(
-                                    radius: 36,
-                                    backgroundImage: NetworkImage(
-                                      '${ConstantsConfig.baseApiUrl}/api/files/${user!.collectionId}/${user.id}/${user.avatar!}',
-                                    ),
-                                    backgroundColor: Colors.transparent,
+                                ? Image.network(
+                                    '${ConstantsConfig.baseApiUrl}/api/files/${user!.collectionId}/${user.id}/${user.avatar!}',
+                                    fit: BoxFit.cover,
                                   )
                                 : Text(
                                     (user?.name ?? '').isNotEmpty
                                         ? (user?.name ?? '')[0].toUpperCase()
                                         : '?',
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFFFF1493),
                                     ),
                                   ),
                           ),
@@ -137,37 +119,39 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user?.name ?? 'User',
-                                style: GoogleFonts.gabarito(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w800,
+                                (user?.name ?? 'USER').toUpperCase(),
+                                style: GoogleFonts.vt323(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                (user?.email ?? '').toUpperCase(),
+                                style: GoogleFonts.vt323(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(height: 3),
-                              Text(
-                                user?.email ?? '',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 13,
-                                  color: Colors.white.withOpacity(0.85),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
-                                  vertical: 3,
+                                  vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black, width: 2),
                                 ),
                                 child: Text(
-                                  '💑 In a relationship',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                  '💑 IN A RELATIONSHIP',
+                                  style: GoogleFonts.vt323(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
@@ -187,14 +171,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                           icon: const Icon(
                             Icons.edit_rounded,
                             color: Colors.white,
-                            size: 20,
+                            size: 28,
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
                   // ── Couple stats row ──────────────────────────
                   Row(
@@ -202,7 +186,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       Expanded(
                         child: _StatCard(
                           value: '${daysTogether > 0 ? daysTogether : 1}',
-                          label: 'Days together',
+                          label: 'DAYS',
                           icon: HugeIcons.strokeRoundedCalendar01,
                         ),
                       ),
@@ -210,7 +194,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       Expanded(
                         child: _StatCard(
                           value: '$memoriesCount',
-                          label: 'Memories',
+                          label: 'PICS',
                           icon: HugeIcons.strokeRoundedCamera01,
                         ),
                       ),
@@ -218,68 +202,71 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       Expanded(
                         child: _StatCard(
                           value: '$tasksCount',
-                          label: 'Tasks',
+                          label: 'TASKS',
                           icon: HugeIcons.strokeRoundedCheckmarkSquare02,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 36),
 
                   // ── Partner section ───────────────────────────
-                  _SectionLabel(text: 'My Partner'),
-                  const SizedBox(height: 10),
+                  _SectionLabel(text: 'PLAYER 2'),
+                  const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFFFFD6E7),
-                        width: 1.5,
-                      ),
+                      border: Border.all(color: Colors.black, width: 4),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, offset: Offset(4, 4))
+                      ]
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 48,
-                          height: 48,
+                          width: 54,
+                          height: 54,
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFFFFD6E7),
+                            color: const Color(0xFFFFB6C1),
+                            border: Border.all(color: Colors.black, width: 3),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                            ]
                           ),
                           child: Center(
                             child: Text(
                               (partner?.name ?? '').isNotEmpty
                                   ? (partner?.name ?? '')[0].toUpperCase()
                                   : '?',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFFD6006A),
+                              style: GoogleFonts.vt323(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFFFF1493),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                partner?.name ?? 'Partner',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  color: const Color(0xFF3D0020),
+                                (partner?.name ?? 'PARTNER').toUpperCase(),
+                                style: GoogleFonts.vt323(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
                                 ),
                               ),
                               Text(
-                                partner?.email ?? '',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 12,
-                                  color: const Color(0xFF8B4263),
+                                (partner?.email ?? '').toUpperCase(),
+                                style: GoogleFonts.vt323(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
                                 ),
                               ),
                             ],
@@ -289,19 +276,19 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     ),
                   ),
 
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 36),
 
                   // ── Relationship settings ─────────────────────
-                  _SectionLabel(text: 'Relationship'),
-                  const SizedBox(height: 10),
+                  _SectionLabel(text: 'SETTINGS'),
+                  const SizedBox(height: 12),
                   _SettingsCard(
                     rows: [
                       _SettingsRow(
                         icon: HugeIcons.strokeRoundedCalendar01,
-                        label: 'Anniversary Date',
+                        label: 'ANNIVERSARY',
                         trailing: startedAt != null
                             ? '${startedAt.month}/${startedAt.day}/${startedAt.year}'
-                            : 'Set date',
+                            : 'SET DATE',
                         onTap: () async {
                           final newDate = await showDatePicker(
                             context: context,
@@ -317,35 +304,32 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     ],
                   ),
 
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 48),
 
                   // ── Sign out ──────────────────────────────────
                   SizedBox(
                     width: double.infinity,
-                    height: 54,
-                    child: OutlinedButton.icon(
-                      onPressed: () {},
+                    height: 56,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        ref.read(authProvider.notifier).logout();
+                      },
                       icon: const Icon(
                         Icons.logout_rounded,
-                        color: Color(0xFFD6006A),
-                        size: 20,
+                        color: Colors.white,
+                        size: 24,
                       ),
                       label: Text(
-                        'Sign Out',
-                        style: GoogleFonts.nunito(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFFD6006A),
+                        'QUIT GAME (SIGN OUT)',
+                        style: GoogleFonts.vt323(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Color(0xFFFF6B9D),
-                          width: 1.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: const RoundedRectangleBorder(),
                       ),
                     ),
                   ),
@@ -379,36 +363,34 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFFFD6E7), width: 1.5),
-        boxShadow: [
+        border: Border.all(color: Colors.black, width: 4),
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0xFFFF6B9D).withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+            color: Colors.black,
+            offset: Offset(4, 4),
           ),
         ],
       ),
       child: Column(
         children: [
-          HugeIcon(icon: icon, color: const Color(0xFFD6006A), size: 24),
+          HugeIcon(icon: icon, color: const Color(0xFFFF1493), size: 28),
           const SizedBox(height: 6),
           Text(
             value,
-            style: GoogleFonts.gabarito(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFFD6006A),
+            style: GoogleFonts.vt323(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFFFF1493),
             ),
           ),
           const SizedBox(height: 2),
           Text(
             label,
             textAlign: TextAlign.center,
-            style: GoogleFonts.nunito(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF8B4263),
+            style: GoogleFonts.vt323(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
         ],
@@ -427,11 +409,11 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.gabarito(
-        fontSize: 18,
-        fontWeight: FontWeight.w800,
-        color: const Color(0xFFD6006A),
-        letterSpacing: -0.2,
+      style: GoogleFonts.vt323(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: const Color(0xFFFF1493),
+        letterSpacing: 1.5,
       ),
     );
   }
@@ -448,13 +430,11 @@ class _SettingsCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFFFD6E7), width: 1.5),
-        boxShadow: [
+        border: Border.all(color: Colors.black, width: 4),
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0xFFFF6B9D).withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black,
+            offset: Offset(4, 4),
           ),
         ],
       ),
@@ -465,12 +445,6 @@ class _SettingsCard extends StatelessWidget {
             children: [
               InkWell(
                 onTap: row.onTap,
-                borderRadius: BorderRadius.vertical(
-                  top: i == 0 ? const Radius.circular(20) : Radius.zero,
-                  bottom: i == rows.length - 1
-                      ? const Radius.circular(20)
-                      : Radius.zero,
-                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 18,
@@ -479,58 +453,62 @@ class _SettingsCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
-                        width: 36,
-                        height: 36,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFE4EF),
-                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFFFFB6C1),
+                          border: Border.all(color: Colors.black, width: 2),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                          ]
                         ),
                         child: Center(
                           child: row.icon is IconData
                               ? Icon(
                                   row.icon as IconData,
-                                  color: const Color(0xFFD6006A),
-                                  size: 18,
+                                  color: Colors.black,
+                                  size: 20,
                                 )
                               : HugeIcon(
                                   icon: row.icon,
-                                  color: const Color(0xFFD6006A),
-                                  size: 18,
+                                  color: Colors.black,
+                                  size: 20,
                                 ),
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Text(
                           row.label,
-                          style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF3D0020),
+                          style: GoogleFonts.vt323(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
                       ),
                       if (row.trailing != null) ...[
                         Text(
                           row.trailing!,
-                          style: GoogleFonts.nunito(
-                            fontSize: 12,
-                            color: const Color(0xFF8B4263),
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFF1493),
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                       ],
                       const Icon(
                         Icons.chevron_right_rounded,
-                        color: Color(0xFFCB8BA4),
-                        size: 20,
+                        color: Colors.black,
+                        size: 24,
                       ),
                     ],
                   ),
                 ),
               ),
               if (i < rows.length - 1)
-                const Divider(height: 1, color: Color(0xFFFFE4EF), indent: 68),
+                const Divider(height: 4, color: Colors.black, thickness: 4),
             ],
           );
         }),
@@ -550,4 +528,24 @@ class _SettingsRow {
     this.trailing,
     required this.onTap,
   });
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -6,31 +6,23 @@ class PinkBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const PinkBottomNav({required this.currentIndex, required this.onTap});
+  const PinkBottomNav({super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final items = [
-      (HugeIcons.strokeRoundedHome11, 'Home'),
-      (HugeIcons.strokeRoundedImage01, 'Gallery'),
-      (HugeIcons.strokeRoundedTask01, 'Tasks'),
-      (HugeIcons.strokeRoundedBookOpen01, 'Lists'),
-      (HugeIcons.strokeRoundedUser, 'Profile'),
+      (HugeIcons.strokeRoundedHome11, 'HOME'),
+      (HugeIcons.strokeRoundedImage01, 'GALLERY'),
+      (HugeIcons.strokeRoundedTask01, 'TASKS'),
+      (HugeIcons.strokeRoundedUser, 'PROFILE'),
     ];
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        border: const Border(
-          top: BorderSide(color: Color(0xFFFFD6E7), width: 1),
+        border: Border(
+          top: BorderSide(color: Colors.black, width: 4),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFFF6B9D).withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
       ),
       child: SafeArea(
         child: Padding(
@@ -42,37 +34,33 @@ class PinkBottomNav extends StatelessWidget {
               return GestureDetector(
                 onTap: () => onTap(i),
                 behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: selected
-                        ? const Color(0xFFFF6B9D).withOpacity(0.12)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(100),
+                    color: selected ? const Color(0xFFFF1493) : Colors.transparent,
+                    border: Border.all(
+                      color: selected ? Colors.black : Colors.transparent,
+                      width: selected ? 3 : 0,
+                    ),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       HugeIcon(
                         icon: items[i].$1,
-                        color: selected
-                            ? const Color(0xFFD6006A)
-                            : const Color(0xFFCB8BA4),
-                        size: 22,
+                        color: selected ? Colors.white : Colors.black,
+                        size: 24,
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 4),
                       Text(
                         items[i].$2,
-                        style: GoogleFonts.nunito(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: selected
-                              ? const Color(0xFFD6006A)
-                              : const Color(0xFFCB8BA4),
+                        style: GoogleFonts.vt323(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: selected ? Colors.white : Colors.black,
                         ),
                       ),
                     ],

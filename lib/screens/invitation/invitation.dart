@@ -54,12 +54,12 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('You\'re now connected! 💑')),
+            const SnackBar(content: Text('YOU\'RE NOW CONNECTED! 💑')),
           );
           context.pushReplacement("/");
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to accept invitation.')),
+            const SnackBar(content: Text('FAILED TO ACCEPT INVITATION.')),
           );
           setState(() => _isProcessing = false);
         }
@@ -69,7 +69,7 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
         setState(() => _isProcessing = false);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        ).showSnackBar(SnackBar(content: Text('ERROR: ${e.toString()}')));
       }
     }
   }
@@ -85,11 +85,11 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
         if (success) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('Invitation declined.')));
+          ).showSnackBar(const SnackBar(content: Text('INVITATION DECLINED.')));
           context.go('/onboarding');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to decline invitation.')),
+            const SnackBar(content: Text('FAILED TO DECLINE INVITATION.')),
           );
           setState(() => _isProcessing = false);
         }
@@ -99,7 +99,7 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
         setState(() => _isProcessing = false);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        ).showSnackBar(SnackBar(content: Text('ERROR: ${e.toString()}')));
       }
     }
   }
@@ -108,9 +108,9 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
   Widget build(BuildContext context) {
     if (_isFetching) {
       return const Scaffold(
-        backgroundColor: Color(0xFFFFF0F5),
+        backgroundColor: Color(0xFFFFC0CB),
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFFFF6B9D)),
+          child: CircularProgressIndicator(color: Colors.black),
         ),
       );
     }
@@ -124,45 +124,15 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
 
     final inviter = _invitationData?['expand']?['user_1'];
     final inviterName =
-        inviter?['name'] ?? inviter?['email'] ?? 'Someone special';
+        inviter?['name'] ?? inviter?['email'] ?? 'PLAYER 2';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       body: Stack(
         children: [
-          // Background blobs
-          Positioned(
-            top: -80,
-            right: -60,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.2),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: -80,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF85A1).withOpacity(0.15),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PixelGridPainter(),
             ),
           ),
 
@@ -172,15 +142,28 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
               children: [
                 // Back button
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 4.0),
-                  child: IconButton(
-                    onPressed: () => context.canPop()
-                        ? context.pop()
-                        : context.go('/onboarding'),
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedArrowLeft01,
-                      color: Color(0xFFD6006A),
-                      size: 24,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => context.canPop()
+                          ? context.pop()
+                          : context.go('/onboarding'),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                          ]
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 28,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -199,43 +182,41 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
                         // Envelope hero graphic
                         _EnvelopeGraphic(),
 
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 48),
 
-                        // OneUI large title
+                        // Arcade title
                         Text(
-                          'Someone likes\nyou! 💘',
+                          'NEW PLAYER\nCHALLENGER! 💘',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.gabarito(
-                            fontSize: 38,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFD6006A),
-                            height: 1.15,
-                            letterSpacing: -1,
+                          style: GoogleFonts.vt323(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFFFF1493),
+                            height: 1.0,
+                            shadows: const [
+                              Shadow(color: Colors.black, offset: Offset(3, 3))
+                            ]
                           ),
                         ),
 
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 32),
 
                         // Inviter name card
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 20,
-                            vertical: 14,
+                            vertical: 20,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: const Color(0xFFFFD6E7),
-                              width: 1.5,
+                              color: Colors.black,
+                              width: 4,
                             ),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
-                                color: const Color(
-                                  0xFFFF6B9D,
-                                ).withOpacity(0.08),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
+                                color: Colors.black,
+                                offset: Offset(6, 6),
                               ),
                             ],
                           ),
@@ -243,49 +224,46 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFF6B9D),
-                                      Color(0xFFFF4081),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFF1493),
+                                  border: Border.all(color: Colors.black, width: 3),
+                                  boxShadow: const [
+                                    BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                                  ]
                                 ),
                                 child: Center(
                                   child: Text(
                                     inviterName.isNotEmpty
                                         ? inviterName[0].toUpperCase()
                                         : '?',
-                                    style: GoogleFonts.gabarito(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 16),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    inviterName,
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: const Color(0xFF3D0020),
+                                    inviterName.toUpperCase(),
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   Text(
-                                    'wants to be attached with you',
-                                    style: GoogleFonts.nunito(
-                                      fontSize: 12,
-                                      color: const Color(0xFF8B4263),
+                                    'WANTS TO CO-OP WITH YOU.',
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54,
                                     ),
                                   ),
                                 ],
@@ -294,105 +272,92 @@ class _InvitationPageState extends ConsumerState<InvitationPage> {
                           ),
                         ),
 
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 24),
 
                         Text(
-                          'Accept to share your journey, memories, and moments together. 🌹',
+                          'ACCEPT TO SHARE YOUR JOURNEY, MEMORIES, AND MOMENTS TOGETHER. 🌹',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.nunito(
-                            fontSize: 13,
-                            color: const Color(0xFF8B4263),
-                            height: 1.6,
+                          style: GoogleFonts.vt323(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            height: 1.2,
                           ),
                         ),
 
-                        const SizedBox(height: 44),
+                        const SizedBox(height: 48),
 
                         // Accept button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: DecoratedBox(
+                        GestureDetector(
+                          onTap: _isProcessing ? null : _handleAccept,
+                          child: Container(
+                            width: double.infinity,
+                            height: 64,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: BorderRadius.circular(100),
-                              boxShadow: [
+                              color: const Color(0xFFFF1493),
+                              border: Border.all(color: Colors.black, width: 4),
+                              boxShadow: const [
                                 BoxShadow(
-                                  color: const Color(
-                                    0xFFFF4081,
-                                  ).withOpacity(0.4),
-                                  blurRadius: 18,
-                                  spreadRadius: -4,
-                                  offset: const Offset(0, 6),
+                                  color: Colors.black,
+                                  offset: Offset(4, 4),
                                 ),
                               ],
                             ),
-                            child: ElevatedButton.icon(
-                              onPressed: _isProcessing ? null : _handleAccept,
-                              icon: _isProcessing
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.5,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const HugeIcon(
-                                      icon: HugeIcons
-                                          .strokeRoundedCheckmarkBadge01,
+                            alignment: Alignment.center,
+                            child: _isProcessing
+                                ? const CircularProgressIndicator(color: Colors.white)
+                                : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle,
                                       color: Colors.white,
-                                      size: 20,
+                                      size: 28,
                                     ),
-                              label: Text(
-                                _isProcessing ? 'Accepting...' : 'Accept 💕',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      'ACCEPT 💕',
+                                      style: GoogleFonts.vt323(
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                              ),
-                            ),
                           ),
                         ),
 
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 24),
 
                         // Decline button — subtle
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: TextButton(
-                            onPressed: _isProcessing ? null : _handleDecline,
-                            style: TextButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
+                        GestureDetector(
+                          onTap: _isProcessing ? null : _handleDecline,
+                          child: Container(
+                            width: double.infinity,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black, width: 4),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black, offset: Offset(4, 4))
+                              ]
                             ),
+                            alignment: Alignment.center,
                             child: Text(
-                              'Decline',
-                              style: GoogleFonts.nunito(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFFCB8BA4),
+                              'DECLINE',
+                              style: GoogleFonts.vt323(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                letterSpacing: 2,
                               ),
                             ),
                           ),
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
@@ -414,75 +379,101 @@ class _EmptyInvitationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 4.0),
-              child: IconButton(
-                onPressed: onBack,
-                icon: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedArrowLeft01,
-                  color: Color(0xFFD6006A),
-                  size: 24,
-                ),
-              ),
+      backgroundColor: const Color(0xFFFFC0CB),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PixelGridPainter(),
             ),
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
+          ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: onBack,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFFFFD6E7),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFFF6B9D).withOpacity(0.15),
-                              blurRadius: 24,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 3),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                          ]
                         ),
                         child: const Icon(
-                          Icons.inbox_rounded,
-                          size: 48,
-                          color: Color(0xFFD6006A),
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 28,
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'No invitations yet',
-                        style: GoogleFonts.gabarito(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFFD6006A),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Your special someone hasn\'t sent you an invite yet. Share your ID and wait for the magic! ✨',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.nunito(
-                          fontSize: 14,
-                          color: const Color(0xFF8B4263),
-                          height: 1.6,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black, width: 6),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  offset: Offset(8, 8),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.inbox,
+                              size: 64,
+                              color: Color(0xFFFF1493),
+                            ),
+                          ),
+                          const SizedBox(height: 36),
+                          Text(
+                            'NO INVITES YET!',
+                            style: GoogleFonts.vt323(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFFF1493),
+                              letterSpacing: 2,
+                              shadows: const [
+                                Shadow(color: Colors.black, offset: Offset(2, 2))
+                              ]
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'PLAYER 2 HAS NOT SENT AN INVITE YET. SHARE YOUR ID AND WAIT FOR THE MAGIC! ✨',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.vt323(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -494,73 +485,64 @@ class _EnvelopeGraphic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 160,
+      height: 200,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFE4EF), Color(0xFFFFCCE4)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
+        border: Border.all(color: Colors.black, width: 4),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            offset: Offset(6, 6),
+          )
+        ]
       ),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Floating hearts
+          // Basic decorative envelope shapes
+          Positioned.fill(
+            child: Icon(Icons.mark_email_unread, size: 100, color: const Color(0xFFFF1493)),
+          ),
           Positioned(
             top: 20,
             left: 40,
             child: Icon(
               Icons.favorite,
-              size: 14,
-              color: const Color(0xFFFF6B9D).withOpacity(0.4),
+              size: 24,
+              color: const Color(0xFFFF1493).withOpacity(0.8),
             ),
           ),
           Positioned(
-            top: 30,
+            bottom: 30,
             right: 50,
             child: Icon(
               Icons.favorite,
-              size: 10,
-              color: const Color(0xFFFF4081).withOpacity(0.3),
-            ),
-          ),
-          Positioned(
-            bottom: 28,
-            left: 60,
-            child: Icon(
-              Icons.favorite,
-              size: 8,
-              color: const Color(0xFFFF6B9D).withOpacity(0.25),
-            ),
-          ),
-          // Main icon
-          Container(
-            width: 88,
-            height: 88,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFFF4081).withOpacity(0.38),
-                  blurRadius: 28,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.mail_rounded,
-              size: 40,
-              color: Colors.white,
+              size: 32,
+              color: const Color(0xFFFF1493).withOpacity(0.8),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

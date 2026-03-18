@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../services/auth.provider.dart';
-
-import 'package:hugeicons/hugeicons.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
@@ -23,9 +20,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
   Future<void> _register() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+      _showPixelSnackbar('PLEASE FILL ALL FIELDS!');
       return;
     }
 
@@ -41,140 +36,127 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Registration failed: ${e.toString()}')),
-        );
+        _showPixelSnackbar('ERROR: ${e.toString()}');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
+  void _showPixelSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: GoogleFonts.vt323(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.black,
+        behavior: SnackBarBehavior.floating,
+        shape: Border.all(color: Colors.white, width: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB), // Pink background
       body: Stack(
         children: [
-          Positioned(
-            top: -70,
-            left: -70,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF6B9D).withOpacity(0.18),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 80,
-            right: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFF85A1).withOpacity(0.15),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
+          // Pixel grid background
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PixelGridPainter(),
             ),
           ),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Back button
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(
+                      PixelIconButton(
                         onPressed: () => context.pop(),
-                        icon: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowLeft01,
-                          color: Color(0xFFD6006A),
-                          size: 24,
-                        ),
+                        icon: Icons.arrow_back,
+                        color: Colors.white,
                       ),
                     ],
                   ),
                 ),
+
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
 
-                        Text(
-                          'Get started',
-                          style: GoogleFonts.gabarito(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFD6006A),
-                            height: 1.15,
-                            letterSpacing: -1,
+                        // Arcade style heading
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: _pixelDecoration(Colors.white),
+                          child: Text(
+                            'NEW PLAYER',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.vt323(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFFF1493), // Deep pink
+                              letterSpacing: 2,
+                              height: 1.0,
+                            ),
                           ),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 16),
 
                         Text(
-                          'Start your journey together.',
-                          style: GoogleFonts.nunito(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF8B4263),
-                            height: 1.5,
+                          'START YOUR CO-OP JOURNEY',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.vt323(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            letterSpacing: 1.5,
                           ),
                         ),
 
                         const SizedBox(height: 36),
 
-                        _RegisterLabel(text: 'Full Name'),
+                        // Form Fields
+                        const _PixelLabel(text: 'PLAYER NAME:'),
                         const SizedBox(height: 8),
-                        _RegisterTextField(
+                        _PixelTextField(
                           controller: _nameController,
-                          hint: 'e.g. Alex Johnson',
+                          hint: 'e.g. HERO 1',
                         ),
 
                         const SizedBox(height: 20),
 
-                        _RegisterLabel(text: 'Email Address'),
+                        const _PixelLabel(text: 'EMAIL ADDRESS:'),
                         const SizedBox(height: 8),
-                        _RegisterTextField(
+                        _PixelTextField(
                           controller: _emailController,
-                          hint: 'alex@example.com',
+                          hint: 'HERO@ADVENTURE.COM',
                           keyboardType: TextInputType.emailAddress,
                         ),
 
                         const SizedBox(height: 20),
 
-                        _RegisterLabel(text: 'Password'),
+                        const _PixelLabel(text: 'SECRET PASSWORD:'),
                         const SizedBox(height: 8),
-                        _RegisterTextField(
+                        _PixelTextField(
                           controller: _passwordController,
-                          hint: 'Create a strong password',
+                          hint: '********',
                           obscureText: _obscurePassword,
                           suffixIcon: IconButton(
-                            icon: HugeIcon(
-                              icon: _obscurePassword
-                                  ? HugeIcons.strokeRoundedView
-                                  : HugeIcons.strokeRoundedViewOff,
-                              color: const Color(0xFFFF6B9D),
-                              size: 20,
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                              color: const Color(0xFFFF1493),
                             ),
                             onPressed: () {
                               setState(() {
@@ -186,78 +168,75 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
                         const SizedBox(height: 28),
 
-                        RichText(
+                        Text(
+                          'BY CREATING AN ACCOUNT, YOU AGREE TO OUR TERMS OF SERVICE & PRIVACY POLICY.',
                           textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: GoogleFonts.nunito(
-                              fontSize: 12,
-                              color: const Color(0xFF8B4263),
-                              height: 1.5,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text:
-                                    'By creating an account, you agree to our ',
-                              ),
-                              TextSpan(
-                                text: 'Terms of Service',
-                                style: const TextStyle(
-                                  color: Color(0xFFD6006A),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {},
-                              ),
-                              const TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Privacy Policy',
-                                style: const TextStyle(
-                                  color: Color(0xFFD6006A),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {},
-                              ),
-                              const TextSpan(text: '.'),
-                            ],
+                          style: GoogleFonts.vt323(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            letterSpacing: 1,
                           ),
                         ),
 
                         const SizedBox(height: 24),
 
-                        _PinkGradientButton(
-                          onPressed: _register,
-                          label: 'Create Account',
-                          isLoading: _isLoading,
+                        // Action Button
+                        PixelButton(
+                          onPressed: _isLoading ? () {} : _register,
+                          color: const Color(0xFFFF1493),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'CREATE ACCOUNT',
+                                  style: GoogleFonts.vt323(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
                         ),
 
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 32),
 
+                        // Footer Link
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Already have an account? ',
-                              style: GoogleFonts.nunito(
-                                fontSize: 14,
-                                color: const Color(0xFF8B4263),
+                              "ALREADY REGISTERED? ",
+                              style: GoogleFonts.vt323(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
                               ),
                             ),
                             GestureDetector(
                               onTap: () => context.pushReplacement('/login'),
                               child: Text(
-                                'Log in',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: const Color(0xFFD6006A),
+                                'LOG IN',
+                                style: GoogleFonts.vt323(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFFFF1493),
+                                  decoration: TextDecoration.underline,
+                                  decorationThickness: 2,
+                                  decorationColor: const Color(0xFFFF1493),
                                 ),
                               ),
                             ),
                           ],
                         ),
 
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -269,34 +248,50 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       ),
     );
   }
+
+  BoxDecoration _pixelDecoration(Color color) {
+    return BoxDecoration(
+      color: color,
+      border: Border.all(color: Colors.black, width: 4),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black,
+          offset: Offset(4, 4),
+          blurRadius: 0,
+        ),
+      ],
+    );
+  }
 }
 
-class _RegisterLabel extends StatelessWidget {
+// ─── Shared Pixel Widgets ───────────────────────────────────────────────────
+
+class _PixelLabel extends StatelessWidget {
   final String text;
-  const _RegisterLabel({required this.text});
+  const _PixelLabel({required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.nunito(
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        color: const Color(0xFF8B4263),
-        letterSpacing: 0.3,
+      style: GoogleFonts.vt323(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+        letterSpacing: 1,
       ),
     );
   }
 }
 
-class _RegisterTextField extends StatelessWidget {
+class _PixelTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String hint;
   final bool obscureText;
   final Widget? suffixIcon;
   final TextInputType keyboardType;
 
-  const _RegisterTextField({
+  const _PixelTextField({
     this.controller,
     required this.hint,
     this.obscureText = false,
@@ -306,103 +301,145 @@ class _RegisterTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: GoogleFonts.nunito(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        color: const Color(0xFF3D0020),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black, width: 4),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black,
+            offset: Offset(4, 4),
+            blurRadius: 0,
+          ),
+        ],
       ),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.nunito(
-          fontSize: 15,
-          color: const Color(0xFFCB8BA4),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        style: GoogleFonts.vt323(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: GoogleFonts.vt323(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black38,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          border: InputBorder.none,
+          suffixIcon: suffixIcon,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFFFD6E7), width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFFF6B9D), width: 2),
-        ),
-        suffixIcon: suffixIcon,
       ),
     );
   }
 }
 
-class _PinkGradientButton extends StatelessWidget {
+class PixelButton extends StatefulWidget {
   final VoidCallback onPressed;
-  final String label;
-  final bool isLoading;
+  final Widget child;
+  final Color color;
+  final EdgeInsetsGeometry padding;
 
-  const _PinkGradientButton({
+  const PixelButton({
+    super.key,
     required this.onPressed,
-    required this.label,
-    this.isLoading = false,
+    required this.child,
+    this.color = Colors.pinkAccent,
+    this.padding = const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+  });
+
+  @override
+  State<PixelButton> createState() => _PixelButtonState();
+}
+
+class _PixelButtonState extends State<PixelButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 50),
+        margin: EdgeInsets.only(
+          top: _isPressed ? 4.0 : 0.0,
+          left: _isPressed ? 4.0 : 0.0,
+          bottom: _isPressed ? 0.0 : 4.0,
+          right: _isPressed ? 0.0 : 4.0,
+        ),
+        decoration: BoxDecoration(
+          color: widget.color,
+          border: Border.all(color: Colors.black, width: 4),
+          boxShadow: _isPressed
+              ? []
+              : const [
+                  BoxShadow(
+                    color: Colors.black,
+                    offset: Offset(4, 4),
+                    blurRadius: 0,
+                  )
+                ],
+        ),
+        padding: widget.padding,
+        child: Center(child: widget.child),
+      ),
+    );
+  }
+}
+
+class PixelIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color color;
+
+  const PixelIconButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-          ),
-          child: isLoading
-              ? const SizedBox(
-                  height: 22,
-                  width: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      label,
-                      style: GoogleFonts.nunito(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ),
+    return PixelButton(
+      onPressed: onPressed,
+      color: color,
+      padding: const EdgeInsets.all(12),
+      child: Icon(icon, color: Colors.black, size: 28),
     );
   }
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

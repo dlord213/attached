@@ -18,12 +18,15 @@ class MoodLogsList extends ConsumerWidget {
       children: [
         const SizedBox(height: 16),
         Text(
-          'Recent Moods',
-          style: GoogleFonts.gabarito(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFFD6006A),
-            letterSpacing: -0.3,
+          'RECENT MOODS',
+          style: GoogleFonts.vt323(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFFFF1493),
+            letterSpacing: 2,
+            shadows: const [
+              Shadow(color: Colors.black, offset: Offset(2, 2))
+            ]
           ),
         ),
         const SizedBox(height: 14),
@@ -33,9 +36,19 @@ class MoodLogsList extends ConsumerWidget {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    'No recent moods found.',
-                    style: GoogleFonts.nunito(fontSize: 14, color: Colors.grey),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black, width: 3),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, offset: Offset(3, 3))
+                      ]
+                    ),
+                    child: Text(
+                      'NO RECENT MOODS FOUND.',
+                      style: GoogleFonts.vt323(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               );
@@ -45,7 +58,7 @@ class MoodLogsList extends ConsumerWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: logs.length > 5 ? 5 : logs.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final log = logs[index];
                 final isMe = log.user == authRef?.id;
@@ -54,40 +67,40 @@ class MoodLogsList extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: const Color(0xFFFFD6E7),
-                      width: 1.5,
+                      color: Colors.black,
+                      width: 3,
                     ),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
-                        color: const Color(0xFFFF6B9D).withOpacity(0.06),
-                        blurRadius: 14,
-                        offset: const Offset(0, 4),
+                        color: Colors.black,
+                        offset: Offset(4, 4),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 48,
-                        height: 48,
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFF0F5),
-                          borderRadius: BorderRadius.circular(14),
+                          color: const Color(0xFFFFB6C1),
                           border: Border.all(
-                            color: const Color(0xFFFFD6E7),
-                            width: 1,
+                            color: Colors.black,
+                            width: 3,
                           ),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black, offset: Offset(2, 2))
+                          ]
                         ),
                         child: Center(
                           child: Text(
                             log.emoji ?? '😊',
-                            style: const TextStyle(fontSize: 22),
+                            style: const TextStyle(fontSize: 28),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,30 +109,38 @@ class MoodLogsList extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  isMe ? 'You' : 'Partner',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: const Color(0xFF8B4263),
+                                  isMe ? 'PLAYER 1' : 'PLAYER 2',
+                                  style: GoogleFonts.vt323(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFFFF1493),
                                   ),
                                 ),
-                                Text(
-                                  log.created != null
-                                      ? timeago.format(log.created!)
-                                      : '',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: Text(
+                                    log.created != null
+                                        ? timeago.format(log.created!).toUpperCase()
+                                        : '',
+                                    style: GoogleFonts.vt323(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8),
                             Text(
-                              log.body ?? '',
-                              style: GoogleFonts.nunito(
-                                fontSize: 13,
+                              (log.body ?? '').toUpperCase(),
+                              style: GoogleFonts.vt323(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black87,
                               ),
                             ),
@@ -132,8 +153,15 @@ class MoodLogsList extends ConsumerWidget {
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Center(child: Text('Error: \$err')),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          ),
+          error: (err, stack) => Center(
+            child: Text(
+              'ERROR: $err',
+              style: GoogleFonts.vt323(fontSize: 20, color: Colors.red),
+            ),
+          ),
         ),
       ],
     );

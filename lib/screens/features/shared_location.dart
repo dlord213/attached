@@ -55,117 +55,127 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
     final connectionNotifier = ref.read(connectionProvider.notifier);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F5),
+      backgroundColor: const Color(0xFFFFC0CB),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xFFD6006A)),
+        iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'Shared Location',
-          style: GoogleFonts.gabarito(
-            color: const Color(0xFFD6006A),
-            fontWeight: FontWeight.w800,
+          'RADAR',
+          style: GoogleFonts.vt323(
+            color: Colors.black,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
           ),
         ),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: _currentLocation ?? _partnerLocation,
-              initialZoom: 13.0,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.attached.app',
-              ),
-              MarkerLayer(
-                markers: [
-                  if (_currentLocation != null)
-                    Marker(
-                      point: _currentLocation!,
-                      width: 50,
-                      height: 50,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFFD6006A),
-                            width: 2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Color(0xFFD6006A),
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-                  Marker(
-                    point: _partnerLocation,
-                    width: 60,
-                    height: 60,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFFFF6B9D),
-                        border: Border.all(color: Colors.white, width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFFF6B9D).withOpacity(0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.favorite_rounded,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                    ),
+          Positioned.fill(child: CustomPaint(painter: _PixelGridPainter())),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 4),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(6, 6)),
+                  ],
+                ),
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: _currentLocation ?? _partnerLocation,
+                    initialZoom: 13.0,
                   ),
-                ],
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.attached.app',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        if (_currentLocation != null)
+                          Marker(
+                            point: _currentLocation!,
+                            width: 50,
+                            height: 50,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 3,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.black,
+                                  size: 28,
+                                ),
+                              ),
+                            ),
+                          ),
+                        Marker(
+                          point: _partnerLocation,
+                          width: 60,
+                          height: 60,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF1493),
+                              border: Border.all(color: Colors.black, width: 3),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  offset: Offset(4, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.favorite,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
           if (_currentLocation == null)
             Container(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withOpacity(0.8),
               child: const Center(
-                child: CircularProgressIndicator(color: Color(0xFFD6006A)),
+                child: CircularProgressIndicator(color: Colors.black),
               ),
             ),
           Positioned(
-            bottom: 32,
+            bottom: 40,
             left: 24,
             right: 24,
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFD6006A).withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
+                border: Border.all(color: Colors.black, width: 4),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(6, 6)),
                 ],
               ),
               child: Row(
@@ -173,13 +183,13 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFF0F5),
-                      borderRadius: BorderRadius.circular(16),
+                      color: const Color(0xFFFFB6C1),
+                      border: Border.all(color: Colors.black, width: 3),
                     ),
-                    child: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedLocation01,
-                      color: Color(0xFFD6006A),
-                      size: 24,
+                    child: const Icon(
+                      Icons.location_on,
+                      color: Colors.black,
+                      size: 28,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -192,41 +202,47 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
                           builder: (context) {
                             final partnerName =
                                 connectionNotifier.partnerData?.name ??
-                                'Partner\'s';
+                                'PARTNER';
                             return Text(
-                              "$partnerName Location",
-                              style: GoogleFonts.gabarito(
-                                fontSize: 18,
+                              "${partnerName.toUpperCase()}'S LOCATION",
+                              style: GoogleFonts.vt323(
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2D3142),
+                                color: Colors.black,
                               ),
                             );
                           },
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Updated just now',
-                          style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            color: const Color(0xFF9094A6),
+                          'UPDATED JUST NOW',
+                          style: GoogleFonts.vt323(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       _mapController.move(_partnerLocation, 15.0);
                     },
-                    style: IconButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF6B9D),
-                      foregroundColor: Colors.white,
+                    child: Container(
                       padding: const EdgeInsets.all(12),
-                    ),
-                    icon: const Icon(
-                      Icons.navigation_rounded,
-                      color: Colors.white,
-                      size: 24,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF1493),
+                        border: Border.all(color: Colors.black, width: 3),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black, offset: Offset(2, 2)),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.navigation,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ],
@@ -234,23 +250,31 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
             ),
           ),
           Positioned(
-            bottom: 140,
-            right: 24,
-            child: FloatingActionButton(
-              heroTag: 'myLocationBtn',
-              onPressed: () {
+            top: 100,
+            right: 40,
+            child: GestureDetector(
+              onTap: () {
                 if (_currentLocation != null) {
                   _mapController.move(_currentLocation!, 15.0);
                 } else {
                   _determinePosition();
                 }
               },
-              backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFFD6006A),
-              elevation: 4,
-              child: const Icon(
-                Icons.my_location_rounded,
-                color: Color(0xFFD6006A),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black, width: 3),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(3, 3)),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.my_location,
+                  color: Colors.black,
+                  size: 28,
+                ),
               ),
             ),
           ),
@@ -258,4 +282,24 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
       ),
     );
   }
+}
+
+class _PixelGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..strokeWidth = 2;
+
+    const spacing = 40.0;
+    for (double i = 0; i < size.width; i += spacing) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += spacing) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
