@@ -16,25 +16,28 @@ class MemoryCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black, width: 4),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(4, 4),
+            ),
+          ],
+        ),
         child: Stack(
           fit: StackFit.expand,
           children: [
             if (item.isEncrypted)
               Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [const Color(0xFF3D0020), const Color(0xFF1E0010)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
+                color: const Color(0xFFFF1493),
                 child: const Center(
                   child: Icon(
-                    Icons.lock_rounded,
-                    size: 52,
-                    color: Colors.white54,
+                    Icons.lock,
+                    size: 48,
+                    color: Colors.white,
                   ),
                 ),
               )
@@ -47,20 +50,17 @@ class MemoryCard extends StatelessWidget {
               )
             else
               Container(color: Colors.grey[200]),
+              
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                padding: const EdgeInsets.fromLTRB(12, 24, 12, 12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.38),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(color: Colors.black, width: 4),
                   ),
                 ),
                 child: Row(
@@ -68,11 +68,11 @@ class MemoryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        item.customTag ?? 'Memory',
-                        style: GoogleFonts.nunito(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                        (item.customTag ?? 'MEMORY').toUpperCase(),
+                        style: GoogleFonts.vt323(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -80,9 +80,10 @@ class MemoryCard extends StatelessWidget {
                     if (item.created != null)
                       Text(
                         '${item.created!.month}/${item.created!.day}',
-                        style: GoogleFonts.nunito(
-                          fontSize: 10,
-                          color: Colors.white.withOpacity(0.85),
+                        style: GoogleFonts.vt323(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
                         ),
                       ),
                   ],
