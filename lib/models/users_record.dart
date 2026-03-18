@@ -30,8 +30,6 @@ enum UsersRecordFieldsEnum {
   name('name'),
   avatar('avatar'),
   hasPartner('has_partner'),
-  currentMood('current_mood'),
-  currentEmoji('current_emoji'),
   created('created'),
   updated('updated'),
   hidden$tokenKey('tokenKey'),
@@ -55,8 +53,6 @@ final class UsersRecord extends _i2.AuthRecord {
     this.name,
     this.avatar,
     required this.hasPartner,
-    this.currentMood,
-    this.currentEmoji,
     this.created,
     this.updated,
   }) : super();
@@ -86,20 +82,6 @@ final class UsersRecord extends _i2.AuthRecord {
   @_i1.JsonKey(name: 'has_partner')
   final bool hasPartner;
 
-  @_i1.JsonKey(name: 'current_mood')
-  final String? currentMood;
-
-  static const current_moodMinValue = 0;
-
-  static const current_moodMaxValue = 0;
-
-  @_i1.JsonKey(name: 'current_emoji')
-  final String? currentEmoji;
-
-  static const current_emojiMinValue = 0;
-
-  static const current_emojiMaxValue = 0;
-
   final DateTime? created;
 
   final DateTime? updated;
@@ -117,8 +99,6 @@ final class UsersRecord extends _i2.AuthRecord {
     String? name,
     String? avatar,
     bool? hasPartner,
-    String? currentMood,
-    String? currentEmoji,
     DateTime? created,
     DateTime? updated,
   }) {
@@ -132,8 +112,6 @@ final class UsersRecord extends _i2.AuthRecord {
       name: name ?? this.name,
       avatar: avatar ?? this.avatar,
       hasPartner: hasPartner ?? this.hasPartner,
-      currentMood: currentMood ?? this.currentMood,
-      currentEmoji: currentEmoji ?? this.currentEmoji,
       created: created ?? this.created,
       updated: updated ?? this.updated,
     );
@@ -164,8 +142,6 @@ final class UsersRecord extends _i2.AuthRecord {
         name,
         avatar,
         hasPartner,
-        currentMood,
-        currentEmoji,
         created,
         updated,
       ];
@@ -177,8 +153,6 @@ final class UsersRecord extends _i2.AuthRecord {
     String? name,
     String? avatar,
     required bool hasPartner,
-    String? currentMood,
-    String? currentEmoji,
     DateTime? created,
     DateTime? updated,
   }) {
@@ -192,8 +166,6 @@ final class UsersRecord extends _i2.AuthRecord {
       name: name,
       avatar: avatar,
       hasPartner: hasPartner,
-      currentMood: currentMood,
-      currentEmoji: currentEmoji,
       created: created,
       updated: updated,
     ).toJson();
@@ -228,18 +200,6 @@ final class UsersRecord extends _i2.AuthRecord {
       UsersRecordFieldsEnum.hasPartner.nameInSchema:
           jsonMap[UsersRecordFieldsEnum.hasPartner.nameInSchema]
     });
-    if (currentMood != null) {
-      result.addAll({
-        UsersRecordFieldsEnum.currentMood.nameInSchema:
-            jsonMap[UsersRecordFieldsEnum.currentMood.nameInSchema]
-      });
-    }
-    if (currentEmoji != null) {
-      result.addAll({
-        UsersRecordFieldsEnum.currentEmoji.nameInSchema:
-            jsonMap[UsersRecordFieldsEnum.currentEmoji.nameInSchema]
-      });
-    }
     if (created != null) {
       result.addAll({
         UsersRecordFieldsEnum.created.nameInSchema:

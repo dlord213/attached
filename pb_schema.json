@@ -295,34 +295,6 @@
         "type": "bool"
       },
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text3431647120",
-        "max": 0,
-        "min": 0,
-        "name": "current_mood",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text307593526",
-        "max": 0,
-        "min": 0,
-        "name": "current_emoji",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
         "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
@@ -1693,6 +1665,20 @@
         "required": false,
         "system": false,
         "type": "geoPoint"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3058431538",
+        "max": 0,
+        "min": 0,
+        "name": "emoji",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
       },
       {
         "hidden": false,

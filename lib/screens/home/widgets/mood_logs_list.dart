@@ -44,7 +44,7 @@ class MoodLogsList extends ConsumerWidget {
             return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: logs.length,
+              itemCount: logs.length > 5 ? 5 : logs.length,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final log = logs[index];

@@ -22,88 +22,314 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
     final tagCtrl = TextEditingController();
     bool isEncrypted = false;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setStateSB) {
-          return AlertDialog(
-            backgroundColor: const Color(0xFFFFF0F5),
-            title: Text(
-              'Add Memory',
-              style: GoogleFonts.gabarito(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFFD6006A),
-              ),
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: tagCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Custom Tag (e.g. Travel)',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFF5F9),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ── Drag handle ─────────────────────────────────
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFB3D1),
+                      borderRadius: BorderRadius.circular(100),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    const Icon(Icons.lock_rounded, color: Color(0xFF8B4263)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Encrypt (requires locking)',
-                        style: GoogleFonts.nunito(
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF8B4263),
-                        ),
+                  const SizedBox(height: 24),
+
+                  // ── Gradient icon + title ────────────────────────
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFF6B9D), Color(0xFFFF4081)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFF4081).withOpacity(0.35),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                    Switch(
-                      value: isEncrypted,
-                      activeColor: const Color(0xFFFF4081),
-                      onChanged: (val) => setStateSB(() => isEncrypted = val),
+                    child: const Icon(
+                      Icons.add_photo_alternate_rounded,
+                      color: Colors.white,
+                      size: 30,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(
-                  'Cancel',
-                  style: GoogleFonts.nunito(color: Colors.grey),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF4081),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
                   ),
-                ),
-                onPressed: () {
-                  ref
-                      .read(galleryProvider.notifier)
-                      .addGalleryItem(
-                        customTag: tagCtrl.text.trim(),
-                        isEncrypted: isEncrypted,
-                      );
-                  Navigator.pop(ctx);
-                },
-                child: Text(
-                  'Pick Image',
-                  style: GoogleFonts.nunito(color: Colors.white),
-                ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Add a Memory',
+                    style: GoogleFonts.gabarito(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFFD6006A),
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Tag it and make it yours',
+                    style: GoogleFonts.nunito(
+                      fontSize: 13,
+                      color: const Color(0xFFB06080),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+
+                  // ── Body ─────────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Tag label
+                        Text(
+                          'Memory Tag',
+                          style: GoogleFonts.nunito(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF8B4263),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Tag text field
+                        TextField(
+                          controller: tagCtrl,
+                          style: GoogleFonts.nunito(
+                            color: const Color(0xFF4A1030),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'e.g. Travel, Date Night…',
+                            hintStyle: GoogleFonts.nunito(
+                              color: const Color(0xFFCCA0B4),
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.label_rounded,
+                              color: Color(0xFFFF6B9D),
+                              size: 20,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFFFD6E7),
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFFF4081),
+                                width: 1.8,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Encrypt toggle card
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isEncrypted
+                                ? const Color(0xFFFF4081).withOpacity(0.07)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isEncrypted
+                                  ? const Color(0xFFFF4081).withOpacity(0.4)
+                                  : const Color(0xFFFFD6E7),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: isEncrypted
+                                      ? const Color(
+                                          0xFFFF4081,
+                                        ).withOpacity(0.12)
+                                      : const Color(0xFFFFF0F5),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  isEncrypted
+                                      ? Icons.lock_rounded
+                                      : Icons.lock_open_rounded,
+                                  color: isEncrypted
+                                      ? const Color(0xFFFF4081)
+                                      : const Color(0xFF8B4263),
+                                  size: 18,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Encrypt Memory',
+                                      style: GoogleFonts.nunito(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                        color: const Color(0xFF4A1030),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Requires biometric unlock to view',
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 11.5,
+                                        color: const Color(0xFFB06080),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Switch(
+                                value: isEncrypted,
+                                activeColor: const Color(0xFFFF4081),
+                                inactiveThumbColor: const Color(0xFFCCA0B4),
+                                inactiveTrackColor: const Color(0xFFFFD6E7),
+                                onChanged: (val) =>
+                                    setStateSB(() => isEncrypted = val),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Action buttons
+                        Row(
+                          children: [
+                            // Cancel
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => Navigator.pop(ctx),
+                                child: Container(
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: const Color(0xFFFFD6E7),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style: GoogleFonts.nunito(
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color(0xFF8B4263),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Pick Image
+                            Expanded(
+                              flex: 2,
+                              child: GestureDetector(
+                                onTap: () {
+                                  ref
+                                      .read(galleryProvider.notifier)
+                                      .addGalleryItem(
+                                        customTag: tagCtrl.text.trim(),
+                                        isEncrypted: isEncrypted,
+                                      );
+                                  Navigator.pop(ctx);
+                                },
+                                child: Container(
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFFF6B9D),
+                                        Color(0xFFFF4081),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(
+                                          0xFFFF4081,
+                                        ).withOpacity(0.35),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.image_rounded,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Pick Image',
+                                        style: GoogleFonts.nunito(
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
       ),

@@ -31,6 +31,7 @@ enum PresencesRecordFieldsEnum {
   isLowBattery('is_low_battery'),
   battery('battery'),
   location('location'),
+  emoji('emoji'),
   created('created'),
   updated('updated');
 
@@ -52,6 +53,7 @@ final class PresencesRecord extends _i2.BaseRecord {
     required this.isLowBattery,
     this.battery,
     this.location,
+    this.emoji,
     this.created,
     this.updated,
   }) : super();
@@ -91,6 +93,12 @@ final class PresencesRecord extends _i2.BaseRecord {
 
   final GeoPoint? location;
 
+  final String? emoji;
+
+  static const emojiMinValue = 0;
+
+  static const emojiMaxValue = 0;
+
   final DateTime? created;
 
   final DateTime? updated;
@@ -109,6 +117,7 @@ final class PresencesRecord extends _i2.BaseRecord {
     bool? isLowBattery,
     dynamic battery,
     GeoPoint? location,
+    String? emoji,
     DateTime? created,
     DateTime? updated,
   }) {
@@ -123,6 +132,7 @@ final class PresencesRecord extends _i2.BaseRecord {
       isLowBattery: isLowBattery ?? this.isLowBattery,
       battery: battery ?? this.battery,
       location: location ?? this.location,
+      emoji: emoji ?? this.emoji,
       created: created ?? this.created,
       updated: updated ?? this.updated,
     );
@@ -157,6 +167,7 @@ final class PresencesRecord extends _i2.BaseRecord {
         isLowBattery,
         battery,
         location,
+        emoji,
         created,
         updated,
       ];
@@ -169,6 +180,7 @@ final class PresencesRecord extends _i2.BaseRecord {
     required bool isLowBattery,
     dynamic battery,
     GeoPoint? location,
+    String? emoji,
     DateTime? created,
     DateTime? updated,
   }) {
@@ -183,6 +195,7 @@ final class PresencesRecord extends _i2.BaseRecord {
       isLowBattery: isLowBattery,
       battery: battery,
       location: location,
+      emoji: emoji,
       created: created,
       updated: updated,
     ).toJson();
@@ -223,6 +236,12 @@ final class PresencesRecord extends _i2.BaseRecord {
       result.addAll({
         PresencesRecordFieldsEnum.location.nameInSchema:
             jsonMap[PresencesRecordFieldsEnum.location.nameInSchema]
+      });
+    }
+    if (emoji != null) {
+      result.addAll({
+        PresencesRecordFieldsEnum.emoji.nameInSchema:
+            jsonMap[PresencesRecordFieldsEnum.emoji.nameInSchema]
       });
     }
     if (created != null) {

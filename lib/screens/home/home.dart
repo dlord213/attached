@@ -15,6 +15,7 @@ import 'tasks_tab.dart';
 import '../profile/profile_tab.dart';
 import '../features/shared_location.dart';
 import '../features/shared_curated_list.dart';
+import '../../services/presence.provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -80,6 +81,9 @@ class _HomeBody extends ConsumerWidget {
         : 0;
     final tasksAsync = ref.watch(tasksProvider);
     final tasksCount = tasksAsync.value?.length ?? 0;
+
+    final partnerPresenceAsync = ref.watch(partnerPresenceProvider);
+    final partnerPresence = partnerPresenceAsync.value;
 
     return Stack(
       children: [
@@ -214,7 +218,7 @@ class _HomeBody extends ConsumerWidget {
                                       ),
                                       const SizedBox(height: 3),
                                       Text(
-                                        'At home · Missing you 🥺',
+                                        '${partnerPresence?.emoji ?? "🏠"} ${partnerPresence?.status ?? "At home · Missing you 🥺"}',
                                         style: GoogleFonts.nunito(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
@@ -246,7 +250,7 @@ class _HomeBody extends ConsumerWidget {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  '4% (Buddy)',
+                                                  '${partnerPresence?.battery is Map ? partnerPresence?.battery['level'] : partnerPresence?.battery ?? "0"}% (Buddy)',
                                                   style: GoogleFonts.nunito(
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.w700,
@@ -280,7 +284,9 @@ class _HomeBody extends ConsumerWidget {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  'DND Synced',
+                                                  partnerPresence?.isDnd == true
+                                                      ? 'DND Active'
+                                                      : 'DND Off',
                                                   style: GoogleFonts.nunito(
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.w700,

@@ -16,8 +16,6 @@ UsersRecord _$UsersRecordFromJson(Map<String, dynamic> json) => UsersRecord(
   name: json['name'] as String?,
   avatar: json['avatar'] as String?,
   hasPartner: json['has_partner'] as bool,
-  currentMood: json['current_mood'] as String?,
-  currentEmoji: json['current_emoji'] as String?,
   created: json['created'] == null
       ? null
       : DateTime.parse(json['created'] as String),
@@ -37,8 +35,6 @@ Map<String, dynamic> _$UsersRecordToJson(UsersRecord instance) =>
       'name': instance.name,
       'avatar': instance.avatar,
       'has_partner': instance.hasPartner,
-      'current_mood': instance.currentMood,
-      'current_emoji': instance.currentEmoji,
       'created': instance.created?.toIso8601String(),
       'updated': instance.updated?.toIso8601String(),
     };
