@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:attached/services/api.service.dart';
+import 'package:attached/models/gallery_record.dart';
 
 class GalleryTab extends ConsumerStatefulWidget {
   const GalleryTab({super.key});
@@ -17,6 +19,78 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
   final LocalAuthentication _auth = LocalAuthentication();
 
   final _categories = ['ALL', 'DATES', 'TRAVEL', 'HOME', 'SELFIES'];
+
+  void _showHeroOverlay(GalleryRecord item) {
+    final imageUrl = item.image != null && item.image!.isNotEmpty
+        ? '${apiService.pb.baseURL}/api/files/${item.collectionId}/${item.id}/${item.image}'
+        : null;
+
+    if (imageUrl == null) return;
+
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        opaque: false,
+        barrierColor: Colors.black87,
+        pageBuilder: (context, _, __) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [
+                Center(
+                  child: InteractiveViewer(
+                    child: Hero(
+                      tag: 'memory_${item.id}',
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white, size: 36),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                  ),
+                ),
+                if (item.created != null)
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Text(
+                          '${item.created!.month}/${item.created!.day}/${item.created!.year}',
+                          style: GoogleFonts.vt323(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            shadows: const [
+                              Shadow(
+                                color: Colors.black,
+                                blurRadius: 4,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   void _showAddDialog() {
     final tagCtrl = TextEditingController();
@@ -488,10 +562,10 @@ class _GalleryTabState extends ConsumerState<GalleryTab> {
                                   biometricOnly: false,
                                 );
                                 if (didAuthenticate) {
-                                  // Open enlarged photo dialog or screen
+                                  _showHeroOverlay(item);
                                 }
                               } else {
-                                // Open enlarged photo dialog or screen
+                                _showHeroOverlay(item);
                               }
                             },
                           );

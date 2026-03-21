@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:do_not_disturb/do_not_disturb.dart';
@@ -14,6 +15,8 @@ class PresenceService {
   final DoNotDisturbPlugin _dndPlugin = DoNotDisturbPlugin();
   StreamSubscription<BatteryState>? _batteryStateSubscription;
   Timer? _statusTimer;
+  int? _lastBatteryLevel;
+  bool? _lastDndStatus;
 
   void startListening(String userId, String connectionId) {
     _listenToBattery(userId, connectionId);
@@ -44,50 +47,85 @@ class PresenceService {
         'battery': {'level': level},
         'is_low_battery': isLow,
       });
+      _lastBatteryLevel = level;
     } catch (e) {
       print('Error fetching battery: $e');
     }
   }
 
   void _startStatusPolling(String userId, String connectionId) {
-    // Update location and DND status periodically
-    _statusTimer = Timer.periodic(const Duration(minutes: 5), (timer) async {
-      // 1. Fetch DND Status
+    // Update DND and battery status periodically
+    _statusTimer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+      // 1. Battery check
+      try {
+        final level = await _battery.batteryLevel;
+        if (_lastBatteryLevel == null || level < _lastBatteryLevel!) {
+          await _updateBattery(userId, connectionId);
+        } else if (level > _lastBatteryLevel!) {
+          _lastBatteryLevel = level;
+        }
+      } catch (e) {
+        print('Error polling battery: $e');
+      }
+
+      // 2. Fetch DND Status
       bool isDnd = false;
       try {
         isDnd = await _dndPlugin.isDndEnabled();
       } catch (e) {
-        // DND check might fail on non-supported platforms (e.g. iOS)
         print('Error fetching DND: $e');
       }
 
-      final payload = <String, dynamic>{'is_dnd': isDnd};
+      if (_lastDndStatus != isDnd) {
+        _lastDndStatus = isDnd;
+        await _updatePresence(userId, connectionId, {'is_dnd': isDnd});
+      }
+    });
 
-      // 2. Fetch Location
-      try {
-        final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-        if (serviceEnabled) {
-          var permission = await Geolocator.checkPermission();
-          if (permission == LocationPermission.denied) {
-            permission = await Geolocator.requestPermission();
-          }
-          if (permission == LocationPermission.whileInUse ||
-              permission == LocationPermission.always) {
-            final position = await Geolocator.getCurrentPosition(
-              locationSettings: const LocationSettings(
-                accuracy: LocationAccuracy.medium,
-              ),
-            );
-            // PocketBase expects a geoPoint string format as "lat,lng"
-            payload['location'] = '${position.latitude},${position.longitude}';
-          }
+    // Initial DND fetch
+    _dndPlugin.isDndEnabled().then((isDnd) {
+      _lastDndStatus = isDnd;
+      _updatePresence(userId, connectionId, {'is_dnd': isDnd});
+    }).catchError((_) {});
+  }
+
+  Future<void> updateLocation(
+    String userId,
+    String connectionId,
+    BuildContext context,
+  ) async {
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please enable location to share with your partner.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
         }
-      } catch (e) {
-        print('Error fetching location: $e');
+        return;
       }
 
-      await _updatePresence(userId, connectionId, payload);
-    });
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+          ),
+        );
+        await _updatePresence(userId, connectionId, {
+          'location': '${position.latitude},${position.longitude}',
+        });
+      }
+    } catch (e) {
+      print('Error updating location: $e');
+    }
   }
 
   Future<void> updateStatus(

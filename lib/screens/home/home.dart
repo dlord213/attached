@@ -16,6 +16,7 @@ import '../profile/profile_tab.dart';
 import '../features/shared_location.dart';
 import '../features/shared_curated_list.dart';
 import '../../services/presence.provider.dart';
+import '../../services/presence.service.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -24,8 +25,40 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> with WidgetsBindingObserver {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _triggerLocationUpdate();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    ref.read(presenceProvider).stopListening();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _triggerLocationUpdate();
+    }
+  }
+
+  void _triggerLocationUpdate() {
+    final auth = ref.read(authProvider);
+    final connection = ref.read(connectionProvider);
+    if (auth != null && connection != null) {
+      ref.read(presenceProvider).startListening(auth.id, connection.id);
+      ref.read(presenceProvider).updateLocation(auth.id, connection.id, context);
+    }
+  }
 
   String get _greeting {
     final hour = DateTime.now().hour;

@@ -6,6 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:attached/services/connection.provider.dart';
+import 'package:attached/services/auth.provider.dart';
+import 'package:attached/services/presence.service.dart';
 
 class SharedLocationScreen extends ConsumerStatefulWidget {
   const SharedLocationScreen({super.key});
@@ -24,6 +26,13 @@ class _SharedLocationScreenState extends ConsumerState<SharedLocationScreen> {
   void initState() {
     super.initState();
     _determinePosition();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = ref.read(authProvider);
+      final connection = ref.read(connectionProvider);
+      if (auth != null && connection != null) {
+        ref.read(presenceProvider).updateLocation(auth.id, connection.id, context);
+      }
+    });
   }
 
   Future<void> _determinePosition() async {

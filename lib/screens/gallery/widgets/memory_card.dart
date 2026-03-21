@@ -42,11 +42,14 @@ class MemoryCard extends StatelessWidget {
                 ),
               )
             else if (imageUrl != null)
-              Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (ctx, _, __) =>
-                    Container(color: Colors.grey[300]),
+              Hero(
+                tag: 'memory_${item.id}',
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, _, __) =>
+                      Container(color: Colors.grey[300]),
+                ),
               )
             else
               Container(color: Colors.grey[200]),

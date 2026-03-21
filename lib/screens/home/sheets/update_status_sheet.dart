@@ -16,6 +16,7 @@ class UpdateStatusSheet extends ConsumerStatefulWidget {
 class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
   final _emojiController = TextEditingController();
   final _statusController = TextEditingController();
+  bool _isUpdating = false;
 
   void _showEmojiPicker() {
     showModalBottomSheet(
@@ -282,7 +283,7 @@ class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
                     Expanded(
                       flex: 2,
                       child: GestureDetector(
-                        onTap: () async {
+                        onTap: _isUpdating ? null : () async {
                           final authRef = ref.read(authProvider);
                           final connectionRef = ref.read(connectionProvider);
 
@@ -296,6 +297,9 @@ class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
                               connectionId != null &&
                               emoji.isNotEmpty &&
                               status.isNotEmpty) {
+                            setState(() {
+                              _isUpdating = true;
+                            });
                             await ref
                                 .read(presenceProvider)
                                 .updateStatus(
@@ -304,6 +308,11 @@ class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
                                   emoji,
                                   status,
                                 );
+                            if (mounted) {
+                              setState(() {
+                                _isUpdating = false;
+                              });
+                            }
                           }
 
                           if (context.mounted) {
@@ -313,7 +322,7 @@ class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
                         child: Container(
                           height: 56,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFF1493),
+                            color: _isUpdating ? Colors.grey : const Color(0xFFFF1493),
                             border: Border.all(color: Colors.black, width: 4),
                             boxShadow: const [
                               BoxShadow(
@@ -323,26 +332,35 @@ class _UpdateStatusSheetState extends ConsumerState<UpdateStatusSheet> {
                             ]
                           ),
                           alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.check_rounded,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'UPDATE',
-                                style: GoogleFonts.vt323(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  letterSpacing: 2,
+                          child: _isUpdating
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 3,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.check_rounded,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'UPDATE',
+                                      style: GoogleFonts.vt323(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 28,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ),
