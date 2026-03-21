@@ -1,4 +1,4 @@
-package com.example.attached
+package com.mirimomekiku.attached
 
 import io.flutter.embedding.android.FlutterActivity
 
